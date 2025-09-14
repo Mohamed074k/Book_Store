@@ -23,7 +23,7 @@ const routes = [
     path: '/books/:id',
     name: 'BookDetail',
     component: () => import('@/views/BookDetail.vue'),
-    props: true,
+    props: route => ({ id: route.params.id })
   },
   {
     path: '/authors',
@@ -34,7 +34,14 @@ const routes = [
     path: '/authors/:id',
     name: 'AuthorDetail',
     component: () => import('@/views/AuthorDetail.vue'),
-    props: true,
+    props: route => ({ id: route.params.id })
+  },
+
+  // Admin Login Route
+  {
+    path: '/admin/login',
+    name: 'AdminLogin',
+    component: () => import('@/views/admin/Login.vue'),
   },
 
   // Admin Routes (protected)
@@ -44,13 +51,16 @@ const routes = [
     component: () => import('@/views/admin/Dashboard.vue'),
     beforeEnter: (to, from, next) => {
       const auth = useAuthStore()
-      if (auth.isAuthenticated) next()
-      else next('/admin/login') // optional login page later
+      if (auth.isAuthenticated) {
+        next()
+      } else {
+        next('/admin/login')
+      }
     },
     children: [
       {
         path: '',
-        redirect: 'books',
+        redirect: { name: 'AdminBooks' }
       },
       {
         path: 'books',
@@ -66,7 +76,7 @@ const routes = [
         path: 'books/:id/edit',
         name: 'AdminBookEdit',
         component: () => import('@/views/admin/BookForm.vue'),
-        props: true,
+        props: route => ({ id: route.params.id })
       },
       {
         path: 'authors',
@@ -82,30 +92,43 @@ const routes = [
         path: 'authors/:id/edit',
         name: 'AdminAuthorEdit',
         component: () => import('@/views/admin/AuthorForm.vue'),
-        props: true,
+        props: route => ({ id: route.params.id })
       },
-    ],
+    ]
   },
+
+  // 404 Route (Catch-all)
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/NotFound.vue'),
+  }
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 
-// Global guard (optional redirect for protected routes)
+// Global navigation guard
 router.beforeEach((to, from, next) => {
-  const publicPages = ['/', '/about', '/books', '/authors', '/books/:id', '/authors/:id']
-  const isPublic = publicPages.some(p => 
-    to.path === p || to.path.match(new RegExp(`^${p.replace(/:\w+/g, '[^/]+')}$`))
-  )
   const auth = useAuthStore()
 
-  if (!isPublic && !auth.isAuthenticated) {
-    next('/admin/login') // You can add a login page later
-  } else {
-    next()
+  // If trying to access any admin route (except login), require auth
+  if (to.path.startsWith('/admin') && to.name !== 'AdminLogin') {
+    if (!auth.isAuthenticated) {
+      next('/admin/login')
+      return
+    }
   }
+
+  // If authenticated and trying to access /admin/login, redirect to admin dashboard
+  if (to.name === 'AdminLogin' && auth.isAuthenticated) {
+    next('/admin')
+    return
+  }
+
+  next()
 })
 
 export default router
