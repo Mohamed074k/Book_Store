@@ -1,8 +1,16 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16">
-      <div class="container mx-auto px-4">
+    <section class="bg-gradient-hero text-white py-16 relative overflow-hidden">
+      <!-- Background Elements -->
+      <div class="absolute inset-0 opacity-20">
+        <div class="floating-element absolute top-20 left-10 text-3xl">📚</div>
+        <div class="floating-element absolute top-40 right-20 text-3xl">📖</div>
+        <div class="floating-element absolute bottom-32 left-1/4 text-3xl">📕</div>
+        <div class="floating-element absolute bottom-20 right-1/3 text-3xl">📘</div>
+      </div>
+      
+      <div class="container mx-auto px-4 relative">
         <div class="text-center">
           <h1 class="text-5xl font-bold mb-4 animate-fade-in-up">
             Discover Your Next Great Read
@@ -20,7 +28,7 @@
                 @input="handleSearch"
                 type="text"
                 placeholder="Search books by title..."
-                class="w-full px-6 py-4 rounded-2xl text-gray-800 placeholder-gray-300 shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform focus:scale-105"
+                class="w-full px-6 py-4 rounded-2xl text-gray-800 placeholder-gray-300 shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300 transform focus:scale-105 bg-white/95 backdrop-blur-sm"
               />
               <div class="absolute right-4 top-1/2 transform -translate-y-1/2">
                 <svg
@@ -44,7 +52,7 @@
               <select
                 v-model="selectedAuthorId"
                 @change="handleSearch"
-                class="w-full px-6 py-3 rounded-xl text-gray-800 bg-white/90 backdrop-blur shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300"
+                class="w-full px-6 py-3 rounded-xl text-gray-800 bg-white/90 backdrop-blur-sm shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300"
               >
                 <option value="">All Authors</option>
                 <option
@@ -72,7 +80,7 @@
           <div
             v-for="n in 8"
             :key="n"
-            class="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse"
+            class="bg-white rounded-3xl shadow-xl overflow-hidden animate-pulse hover-lift"
           >
             <div class="h-64 bg-gray-200"></div>
             <div class="p-6 space-y-3">
@@ -86,7 +94,7 @@
         <!-- Error State -->
         <div v-else-if="books.error" class="text-center py-16">
           <div
-            class="bg-red-50 border border-red-200 rounded-2xl p-8 max-w-md mx-auto animate-fade-in-up"
+            class="glass-effect border border-red-300 rounded-3xl p-8 max-w-md mx-auto animate-fade-in-up shadow-xl"
           >
             <div class="text-red-600 mb-4">
               <svg
@@ -109,7 +117,7 @@
             <p class="text-gray-600 mb-6">{{ books.error }}</p>
             <button
               @click="loadBooks"
-              class="bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-700 transition-colors duration-300"
+              class="btn-primary text-white px-6 py-3 rounded-xl hover-lift shadow-lg"
             >
               Try Again
             </button>
@@ -124,12 +132,12 @@
           <div
             v-for="(book, index) in filteredBooks"
             :key="book.id"
-            class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 group cursor-pointer animate-fade-in-up"
+            class="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 group cursor-pointer animate-fade-in-up card-hover"
             :style="{ animationDelay: `${index * 100}ms` }"
             @click="goToBook(book.id)"
           >
             <!-- Book Cover -->
-            <div class="relative overflow-hidden rounded-t-2xl">
+            <div class="relative overflow-hidden rounded-t-3xl">
               <img
                 :src="book.coverUrl"
                 :alt="book.title"
@@ -145,7 +153,7 @@
               </div>
               <!-- Year Badge -->
               <div
-                class="absolute top-4 right-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium"
+                class="absolute top-4 right-4 bg-gradient-primary text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg"
               >
                 {{ book.year }}
               </div>
@@ -154,11 +162,11 @@
             <!-- Book Details -->
             <div class="p-6">
               <h3
-                class="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-300"
+                class="text-xl font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors duration-300 line-clamp-2"
               >
                 {{ book.title }}
               </h3>
-              <p class="text-blue-600 font-medium mb-3">
+              <p class="text-purple-600 font-medium mb-3">
                 by {{ getAuthorName(book.authorId) }}
               </p>
               <p class="text-gray-600 text-sm mb-4 line-clamp-3">
@@ -170,7 +178,7 @@
                 <span
                   v-for="tag in book.tags"
                   :key="tag"
-                  class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium hover:bg-blue-100 hover:text-blue-700 transition-colors duration-300"
+                  class="px-3 py-1 bg-gradient-card text-purple-700 rounded-full text-xs font-medium hover:bg-purple-100 transition-colors duration-300"
                 >
                   {{ tag }}
                 </span>
@@ -178,7 +186,7 @@
 
               <!-- Action Button -->
               <button
-                class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                class="w-full btn-primary text-white py-3 rounded-xl font-medium hover-lift shadow-lg"
               >
                 View Details
               </button>
@@ -217,10 +225,52 @@
             <button
               v-if="searchQuery || selectedAuthorId"
               @click="clearFilters"
-              class="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition-colors duration-300"
+              class="btn-primary text-white px-8 py-3 rounded-xl hover-lift shadow-lg"
             >
               Clear Filters
             </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Section -->
+    <section v-if="filteredBooks.length > 0" class="py-16 bg-gradient-to-br from-white to-purple-50 relative overflow-hidden">
+      <!-- Background Elements -->
+      <div class="absolute inset-0 opacity-5">
+        <div class="absolute top-10 left-10 w-32 h-32 bg-gradient-primary rounded-full animate-floating"></div>
+        <div class="absolute bottom-20 right-16 w-24 h-24 bg-gradient-accent rounded-full animate-floating animation-delay-300"></div>
+      </div>
+      
+      <div class="container mx-auto px-4 relative">
+        <h2 class="text-4xl font-bold text-center mb-12 text-gradient-primary animate-fade-in-up">Why Our Books Matter</h2>
+        <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div class="text-center p-8 bg-gradient-card rounded-3xl shadow-xl hover-lift animate-fade-in-up">
+            <div class="w-16 h-16 mx-auto mb-6 bg-gradient-primary rounded-2xl flex items-center justify-center">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Creative Stories</h3>
+            <p class="text-gray-600">Each book offers unique perspectives and captivating storytelling approaches.</p>
+          </div>
+          <div class="text-center p-8 bg-gradient-card rounded-3xl shadow-xl hover-lift animate-fade-in-up animation-delay-200">
+            <div class="w-16 h-16 mx-auto mb-6 bg-gradient-accent rounded-2xl flex items-center justify-center">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Rich Narratives</h3>
+            <p class="text-gray-600">Our authors craft compelling narratives that captivate readers worldwide.</p>
+          </div>
+          <div class="text-center p-8 glass-effect rounded-3xl shadow-xl hover-lift animate-fade-in-up animation-delay-400">
+            <div class="w-16 h-16 mx-auto mb-6 bg-gradient-primary rounded-2xl flex items-center justify-center">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold mb-2">Reader Connection</h3>
+            <p class="text-gray-600">Building lasting relationships between books and their devoted readers.</p>
           </div>
         </div>
       </div>
@@ -272,12 +322,3 @@ const loadBooks = async () => {
 
 onMounted(loadBooks)
 </script>
-
-<style scoped>
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-</style>

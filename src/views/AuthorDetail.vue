@@ -1,17 +1,17 @@
 <!-- src/views/AuthorDetail.vue -->
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50">
+  <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
     <!-- Loading State -->
     <div v-if="authors.loading" class="py-20">
       <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto">
           <div class="text-center mb-12">
-            <div class="w-32 h-32 bg-gray-200 rounded-full animate-pulse mx-auto mb-6"></div>
-            <div class="h-8 bg-gray-200 rounded w-64 mx-auto mb-4 animate-pulse"></div>
-            <div class="h-6 bg-gray-200 rounded w-96 mx-auto animate-pulse"></div>
+            <div class="w-32 h-32 bg-gray-200/50 rounded-full animate-pulse mx-auto mb-6"></div>
+            <div class="h-8 bg-gray-200/50 rounded w-64 mx-auto mb-4 animate-pulse"></div>
+            <div class="h-6 bg-gray-200/50 rounded w-96 mx-auto animate-pulse"></div>
           </div>
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div v-for="n in 6" :key="n" class="bg-gray-200 h-64 rounded-2xl animate-pulse"></div>
+            <div v-for="n in 6" :key="n" class="glass-effect h-64 rounded-3xl animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -20,7 +20,7 @@
     <!-- Error State -->
     <div v-else-if="authors.error" class="py-20">
       <div class="container mx-auto px-4 text-center">
-        <div class="bg-red-50 border border-red-200 rounded-2xl p-8 max-w-md mx-auto">
+        <div class="glass-effect border border-red-300 rounded-3xl p-8 max-w-md mx-auto shadow-xl">
           <div class="text-red-600 mb-4">
             <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -30,7 +30,7 @@
           <p class="text-gray-600 mb-6">{{ authors.error }}</p>
           <button
             @click="$router.push('/authors')"
-            class="bg-purple-600 text-white px-6 py-3 rounded-xl hover:bg-purple-700 transition-colors duration-300"
+            class="btn-primary text-white px-6 py-3 rounded-xl hover-lift shadow-lg"
           >
             Back to Authors
           </button>
@@ -62,13 +62,10 @@
                 class="w-32 h-32 rounded-full object-cover border-4 border-purple-200 shadow-xl mx-auto transition-transform duration-500 hover:scale-110"
                 @error="handleImageError"
               />
-              <div class="absolute inset-0 w-32 h-32 rounded-full bg-gradient-to-tr from-purple-400/20 to-indigo-400/20 hover:from-purple-400/30 hover:to-indigo-400/30 transition-all duration-300"></div>
+              <div class="absolute inset-0 w-32 h-32 rounded-full bg-gradient-to-tr from-purple-400/20 to-pink-400/20 hover:from-purple-400/30 hover:to-pink-400/30 transition-all duration-300 animate-pulse-subtle"></div>
             </div>
             
-            <h1 class="text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
-              {{ author.name }}
-            </h1>
-            
+             
             <p class="text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto mb-8">
               {{ author.bio }}
             </p>
@@ -80,19 +77,19 @@
                 <div class="text-gray-600 font-medium">Published Books</div>
               </div>
               <div class="text-center">
-                <div class="text-3xl font-bold text-indigo-600 mb-1">{{ formatDate(author.createdAt) }}</div>
+                <div class="text-3xl font-bold text-pink-600 mb-1">{{ formatDate(author.createdAt) }}</div>
                 <div class="text-gray-600 font-medium">Member Since</div>
               </div>
             </div>
 
             <!-- Action Buttons -->
             <div class="flex flex-wrap justify-center gap-4">
-              <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-3 rounded-2xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-purple-300">
+              <button class="btn-primary text-white px-8 py-3 rounded-2xl font-semibold hover-lift shadow-lg">
                 Follow Author
               </button>
               <button 
                 @click="shareAuthor"
-                class="bg-white text-gray-800 border-2 border-gray-300 px-8 py-3 rounded-2xl font-semibold hover:border-purple-300 hover:text-purple-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                class="btn-accent text-white px-8 py-3 rounded-2xl font-semibold hover-lift shadow-lg"
               >
                 <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
@@ -112,12 +109,12 @@
               <div
                 v-for="(book, index) in authorBooks"
                 :key="book.id"
-                class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 group cursor-pointer animate-fade-in-up"
+                class="glass-effect rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 group cursor-pointer animate-fade-in-up card-hover"
                 :style="{ animationDelay: `${index * 150}ms` }"
                 @click="goToBook(book.id)"
               >
                 <!-- Book Cover -->
-                <div class="relative overflow-hidden rounded-t-2xl">
+                <div class="relative overflow-hidden rounded-t-3xl">
                   <img
                     :src="book.coverUrl"
                     :alt="book.title"
@@ -130,7 +127,7 @@
                     </div>
                   </div>
                   <!-- Year Badge -->
-                  <div class="absolute top-4 right-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <div class="absolute top-4 right-4 bg-gradient-primary text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
                     {{ book.year }}
                   </div>
                 </div>
@@ -150,14 +147,14 @@
                     <span
                       v-for="tag in book.tags"
                       :key="tag"
-                      class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium hover:bg-purple-100 hover:text-purple-700 transition-colors duration-300"
+                      class="px-3 py-1 bg-purple-100/70 text-purple-700 rounded-full text-xs font-medium hover:bg-purple-200/70 transition-colors duration-300"
                     >
                       {{ tag }}
                     </span>
                   </div>
 
                   <!-- Action Button -->
-                  <button class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-xl font-medium hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-300">
+                  <button class="w-full btn-primary text-white py-3 rounded-xl font-medium hover-lift shadow-lg">
                     Read More
                   </button>
                 </div>
@@ -177,7 +174,7 @@
           </div>
 
           <!-- Author Details Card -->
-          <div class="bg-white rounded-3xl shadow-xl p-8 animate-fade-in-up">
+          <div class="glass-effect rounded-3xl shadow-xl p-8 animate-fade-in-up">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Author Information</h2>
             <div class="grid md:grid-cols-2 gap-6 text-sm">
               <div>
