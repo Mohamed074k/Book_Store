@@ -1,6 +1,6 @@
 <!-- src/App.vue -->
 <template>
-  <div class="min-h-screen flex flex-col bg-gray-50">
+  <div class="min-h-screen flex flex-col bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
     <Header />
     <main class="flex-grow">
       <router-view />

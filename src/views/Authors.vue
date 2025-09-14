@@ -1,9 +1,17 @@
 <!-- src/views/Authors.vue -->
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50">
+  <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-purple-600 to-indigo-700 text-white py-16">
-      <div class="container mx-auto px-4">
+    <section class="bg-gradient-hero text-white py-16 relative overflow-hidden">
+      <!-- Background Elements -->
+      <div class="absolute inset-0 opacity-20">
+        <div class="floating-element absolute top-20 left-10 text-3xl">👤</div>
+        <div class="floating-element absolute top-40 right-20 text-3xl">✍️</div>
+        <div class="floating-element absolute bottom-32 left-1/4 text-3xl">📝</div>
+        <div class="floating-element absolute bottom-20 right-1/3 text-3xl">🎨</div>
+      </div>
+      
+      <div class="container mx-auto px-4 relative">
         <div class="text-center">
           <h1 class="text-5xl font-bold mb-4 animate-fade-in-up">
             Meet Our Authors
@@ -20,7 +28,7 @@
                 @input="handleSearch"
                 type="text"
                 placeholder="Search authors by name or bio..."
-                class="w-full px-6 py-4 rounded-2xl text-gray-800 placeholder-gray-300 shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300 transform focus:scale-105"
+                class="w-full px-6 py-4 rounded-2xl text-gray-800 placeholder-gray-300 shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300 transform focus:scale-105 bg-white/95 backdrop-blur-sm"
               />
               <div class="absolute right-4 top-1/2 transform -translate-y-1/2">
                 <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,7 +49,7 @@
           <div
             v-for="n in 6"
             :key="n"
-            class="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse"
+            class="glass-effect rounded-3xl shadow-xl overflow-hidden animate-pulse hover-lift"
           >
             <div class="p-8 text-center">
               <div class="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4"></div>
@@ -54,7 +62,7 @@
 
         <!-- Error State -->
         <div v-else-if="authors.error" class="text-center py-16">
-          <div class="bg-red-50 border border-red-200 rounded-2xl p-8 max-w-md mx-auto">
+          <div class="glass-effect border border-red-300 rounded-3xl p-8 max-w-md mx-auto shadow-xl">
             <div class="text-red-600 mb-4">
               <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -64,7 +72,7 @@
             <p class="text-gray-600 mb-6">{{ authors.error }}</p>
             <button
               @click="loadAuthors"
-              class="bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-700 transition-colors duration-300"
+              class="btn-primary text-white px-6 py-3 rounded-xl hover-lift shadow-lg"
             >
               Try Again
             </button>
@@ -76,7 +84,7 @@
           <div
             v-for="(author, index) in filteredAuthors"
             :key="author.id"
-            class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 group cursor-pointer animate-fade-in-up"
+            class="glass-effect rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 group cursor-pointer animate-fade-in-up card-hover"
             :style="{ animationDelay: `${index * 150}ms` }"
             @click="goToAuthor(author.id)"
           >
@@ -87,10 +95,10 @@
                 <img
                   :src="author.avatarUrl"
                   :alt="author.name"
-                  class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-purple-100 group-hover:border-purple-300 transition-all duration-300 shadow-lg"
+                  class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-purple-200/50 group-hover:border-purple-300/70 transition-all duration-300 shadow-lg"
                   @error="handleImageError"
                 />
-                <div class="absolute inset-0 w-24 h-24 rounded-full mx-auto bg-gradient-to-tr from-purple-400/20 to-indigo-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="absolute inset-0 w-24 h-24 rounded-full mx-auto bg-gradient-to-tr from-purple-400/20 to-pink-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse-subtle"></div>
               </div>
 
               <!-- Author Info -->
@@ -109,18 +117,16 @@
                   <div class="text-gray-500">Books</div>
                 </div>
                 <div class="text-center">
-                  <div class="font-bold text-indigo-600 text-lg">{{ formatDate(author.createdAt) }}</div>
+                  <div class="font-bold text-pink-600 text-lg">{{ formatDate(author.createdAt) }}</div>
                   <div class="text-gray-500">Joined</div>
                 </div>
               </div>
 
               <!-- Action Button -->
-              <button class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-xl font-medium hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 transform group-hover:scale-105 focus:outline-none focus:ring-4 focus:ring-purple-300 shadow-lg">
+              <button class="w-full btn-primary text-white py-3 rounded-xl font-medium hover-lift shadow-lg">
                 View Profile
               </button>
             </div>
-
- 
           </div>
         </div>
 
@@ -139,7 +145,7 @@
             <button
               v-if="searchQuery"
               @click="clearSearch"
-              class="bg-purple-600 text-white px-8 py-3 rounded-xl hover:bg-purple-700 transition-colors duration-300"
+              class="btn-primary text-white px-8 py-3 rounded-xl hover-lift shadow-lg"
             >
               Clear Search
             </button>
@@ -149,31 +155,37 @@
     </section>
 
     <!-- Featured Section -->
-    <section v-if="filteredAuthors.length > 0" class="py-16 bg-white">
-      <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">Why Our Authors Matter</h2>
+    <section v-if="filteredAuthors.length > 0" class="py-16 bg-gradient-to-br from-purple-100 via-pink-100 to-orange-100 relative overflow-hidden">
+      <!-- Background Elements -->
+      <div class="absolute inset-0 opacity-5">
+        <div class="absolute top-10 left-10 w-32 h-32 bg-gradient-primary rounded-full animate-floating"></div>
+        <div class="absolute bottom-20 right-16 w-24 h-24 bg-gradient-accent rounded-full animate-floating animation-delay-300"></div>
+      </div>
+      
+      <div class="container mx-auto px-4 relative">
+        <h2 class="text-4xl font-bold text-center mb-12 text-gradient-primary animate-fade-in-up">Why Our Authors Matter</h2>
         <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-          <div class="text-center p-6 shadow-xl animate-fade-in-up">
-            <div class="text-purple-600 mb-4">
-              <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="text-center p-8 glass-effect rounded-3xl shadow-xl hover-lift animate-fade-in-up">
+            <div class="w-16 h-16 mx-auto mb-6 bg-gradient-primary rounded-2xl flex items-center justify-center">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
               </svg>
             </div>
             <h3 class="text-xl font-semibold mb-2">Creative Vision</h3>
             <p class="text-gray-600">Each author brings unique perspectives and storytelling approaches.</p>
           </div>
-          <div class="text-center p-6 shadow-xl animate-fade-in-up animation-delay-200">
-            <div class="text-indigo-600 mb-4">
-              <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="text-center p-8 glass-effect rounded-3xl shadow-xl hover-lift animate-fade-in-up animation-delay-200">
+            <div class="w-16 h-16 mx-auto mb-6 bg-gradient-accent rounded-2xl flex items-center justify-center">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
               </svg>
             </div>
             <h3 class="text-xl font-semibold mb-2">Rich Stories</h3>
             <p class="text-gray-600">Our authors craft compelling narratives that captivate readers worldwide.</p>
           </div>
-          <div class="text-center p-6 shadow-xl animate-fade-in-up animation-delay-400">
-            <div class="text-pink-600 mb-4">
-              <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="text-center p-8 glass-effect rounded-3xl shadow-xl hover-lift animate-fade-in-up animation-delay-400">
+            <div class="w-16 h-16 mx-auto mb-6 bg-gradient-primary rounded-2xl flex items-center justify-center">
+              <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
               </svg>
             </div>
@@ -206,10 +218,6 @@ const getAuthorBooksCount = (authorId) => {
   return books.booksByAuthorId(authorId).length
 }
 
-const getAuthorBooks = (authorId) => {
-  return books.booksByAuthorId(authorId)
-}
-
 const formatDate = (dateString) => {
   return new Date(dateString).getFullYear()
 }
@@ -230,10 +238,6 @@ const handleImageError = (event) => {
   event.target.src = 'https://via.placeholder.com/96x96/e5e7eb/9ca3af?text=Author'
 }
 
-const handleBookImageError = (event) => {
-  event.target.src = 'https://via.placeholder.com/48x64/e5e7eb/9ca3af?text=Book'
-}
-
 const loadAuthors = async () => {
   await Promise.all([
     authors.fetchList(),
@@ -245,33 +249,6 @@ onMounted(loadAuthors)
 </script>
 
 <style scoped>
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in-up {
-  animation: fade-in-up 0.6s ease-out forwards;
-}
-
-.animation-delay-200 {
-  animation-delay: 200ms;
-}
-
-.animation-delay-300 {
-  animation-delay: 300ms;
-}
-
-.animation-delay-400 {
-  animation-delay: 400ms;
-}
-
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;

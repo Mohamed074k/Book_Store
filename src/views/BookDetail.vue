@@ -1,21 +1,21 @@
 <!-- src/views/BookDetail.vue -->
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+  <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
     <!-- Loading State -->
     <div v-if="books.loading" class="py-20">
       <div class="container mx-auto px-4">
         <div class="max-w-6xl mx-auto">
           <div class="grid lg:grid-cols-2 gap-12">
             <!-- Image Skeleton -->
-            <div class="bg-gray-200 rounded-3xl animate-pulse h-96"></div>
+            <div class="bg-gray-200/50 rounded-3xl animate-pulse h-96"></div>
             <!-- Content Skeleton -->
             <div class="space-y-6">
-              <div class="h-8 bg-gray-200 rounded w-3/4 animate-pulse"></div>
-              <div class="h-6 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+              <div class="h-8 bg-gray-200/50 rounded w-3/4 animate-pulse"></div>
+              <div class="h-6 bg-gray-200/50 rounded w-1/2 animate-pulse"></div>
               <div class="space-y-3">
-                <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
-                <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
-                <div class="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+                <div class="h-4 bg-gray-200/50 rounded animate-pulse"></div>
+                <div class="h-4 bg-gray-200/50 rounded animate-pulse"></div>
+                <div class="h-4 bg-gray-200/50 rounded w-3/4 animate-pulse"></div>
               </div>
             </div>
           </div>
@@ -26,7 +26,7 @@
     <!-- Error State -->
     <div v-else-if="books.error" class="py-20">
       <div class="container mx-auto px-4 text-center">
-        <div class="bg-red-50 border border-red-200 rounded-2xl p-8 max-w-md mx-auto">
+        <div class="glass-effect border border-red-300 rounded-3xl p-8 max-w-md mx-auto shadow-xl">
           <div class="text-red-600 mb-4">
             <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -36,7 +36,7 @@
           <p class="text-gray-600 mb-6">{{ books.error }}</p>
           <button
             @click="$router.push('/books')"
-            class="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors duration-300"
+            class="btn-primary text-white px-6 py-3 rounded-xl hover-lift shadow-lg"
           >
             Back to Books
           </button>
@@ -49,9 +49,9 @@
       <!-- Breadcrumb -->
       <div class="container mx-auto px-4 mb-8">
         <nav class="flex space-x-2 text-sm text-gray-600 animate-fade-in">
-          <router-link to="/" class="hover:text-blue-600 transition-colors">Home</router-link>
+          <router-link to="/" class="hover:text-purple-600 transition-colors">Home</router-link>
           <span>/</span>
-          <router-link to="/books" class="hover:text-blue-600 transition-colors">Books</router-link>
+          <router-link to="/books" class="hover:text-purple-600 transition-colors">Books</router-link>
           <span>/</span>
           <span class="text-gray-800">{{ book.title }}</span>
         </nav>
@@ -72,7 +72,7 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <!-- Year Badge -->
-                <div class="absolute top-6 right-6 bg-blue-600 text-white px-4 py-2 rounded-2xl font-bold text-lg shadow-lg">
+                <div class="absolute top-6 right-6 bg-gradient-primary text-white px-4 py-2 rounded-2xl font-bold text-lg shadow-lg">
                   {{ book.year }}
                 </div>
               </div>
@@ -85,11 +85,11 @@
                 <h1 class="text-4xl lg:text-5xl font-bold text-gray-800 mb-4 leading-tight">
                   {{ book.title }}
                 </h1>
-                <p class="text-xl text-blue-600 font-semibold mb-2">
+                <p class="text-xl text-purple-600 font-semibold mb-2">
                   by 
                   <router-link
                     :to="{ name: 'AuthorDetail', params: { id: book.authorId } }"
-                    class="hover:text-blue-800 transition-colors underline decoration-2 underline-offset-4"
+                    class="hover:text-purple-800 transition-colors underline decoration-2 underline-offset-4"
                   >
                     {{ authorName }}
                   </router-link>
@@ -104,7 +104,7 @@
                   <span
                     v-for="tag in book.tags"
                     :key="tag"
-                    class="px-4 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 rounded-xl text-sm font-medium border border-blue-200 hover:from-blue-200 hover:to-indigo-200 transition-all duration-300 transform hover:scale-105"
+                    class="px-4 py-2 bg-purple-100/70 text-purple-800 rounded-xl text-sm font-medium border border-purple-200/50 hover:bg-purple-200/70 transition-all duration-300 transform hover:scale-105"
                   >
                     {{ tag }}
                   </span>
@@ -121,15 +121,15 @@
 
               <!-- Action Buttons -->
               <div class="flex flex-wrap gap-4 pt-6">
-                <button class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-2xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300">
+                <button class="btn-primary text-white px-8 py-4 rounded-2xl font-semibold hover-lift shadow-lg">
                   Read Now
                 </button>
-                <button class="bg-white text-gray-800 border-2 border-gray-300 px-8 py-4 rounded-2xl font-semibold hover:border-blue-300 hover:text-blue-600 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <button class="btn-accent text-white px-8 py-4 rounded-2xl font-semibold hover-lift shadow-lg">
                   Add to Wishlist
                 </button>
                 <button
                   @click="shareBook"
-                  class="bg-gray-100 text-gray-700 px-6 py-4 rounded-2xl font-semibold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  class="glass-effect text-gray-700 px-6 py-4 rounded-2xl font-semibold hover-lift shadow-lg border border-gray-200/50"
                 >
                   <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
@@ -139,7 +139,7 @@
               </div>
 
               <!-- Book Details -->
-              <div class="bg-white rounded-2xl p-6 shadow-lg">
+              <div class="glass-effect rounded-2xl p-6 shadow-lg">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Book Details</h3>
                 <div class="grid grid-cols-2 gap-4 text-sm">
                   <div>
@@ -156,13 +156,13 @@
           </div>
 
           <!-- Author Info Card -->
-          <div v-if="author" class="mt-16 bg-white rounded-3xl shadow-xl p-8 animate-fade-in-up">
+          <div v-if="author" class="mt-16 glass-effect rounded-3xl shadow-xl p-8 animate-fade-in-up">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">About the Author</h2>
             <div class="flex flex-col md:flex-row gap-6 items-start">
               <img
                 :src="author.avatarUrl"
                 :alt="author.name"
-                class="w-24 h-24 rounded-2xl object-cover shadow-lg"
+                class="w-24 h-24 rounded-2xl object-cover shadow-lg border-2 border-purple-200/50"
                 @error="handleAuthorImageError"
               />
               <div class="flex-1">
@@ -170,7 +170,7 @@
                 <p class="text-gray-700 leading-relaxed mb-4">{{ author.bio }}</p>
                 <router-link
                   :to="{ name: 'AuthorDetail', params: { id: author.id } }"
-                  class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                  class="inline-flex items-center text-purple-600 hover:text-purple-800 font-medium transition-colors"
                 >
                   View Author Profile
                   <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,13 +188,13 @@
               <div
                 v-for="relatedBook in relatedBooks"
                 :key="relatedBook.id"
-                class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer animate-fade-in-up"
+                class="glass-effect rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer animate-fade-in-up card-hover"
                 @click="goToBook(relatedBook.id)"
               >
                 <img
                   :src="relatedBook.coverUrl"
                   :alt="relatedBook.title"
-                  class="w-full h-48 object-cover rounded-t-2xl"
+                  class="w-full h-48 object-cover rounded-t-3xl"
                   @error="handleImageError"
                 />
                 <div class="p-4">
@@ -308,5 +308,3 @@ watch(() => props.id, loadBookAndAuthor, { immediate: true })
 
 onMounted(loadBookAndAuthor)
 </script>
-
- 
