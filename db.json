@@ -1,0 +1,44 @@
+{
+  "authors": [
+    {
+      "id": 1,
+      "name": "Brandon Sanderson",
+      "bio": "American novelist and software engineer known for epic fantasy.",
+      "avatarUrl": "https://picsum.photos/80?1",
+      "createdAt": "2025-01-01T10:00:00Z",
+      "updatedAt": "2025-01-01T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Agatha Christie",
+      "bio": "British writer known for her detective novels.",
+      "avatarUrl": "https://picsum.photos/80?2",
+      "createdAt": "2025-01-01T10:00:00Z",
+      "updatedAt": "2025-01-01T10:00:00Z"
+    }
+  ],
+  "books": [
+    {
+      "id": 1,
+      "title": "Mistborn",
+      "authorId": 1,
+      "year": 2006,
+      "tags": ["fantasy"],
+      "coverUrl": "https://picsum.photos/120?10",
+      "description": "A young woman discovers she is the key to overthrowing an immortal tyrant...",
+      "createdAt": "2025-01-01T10:00:00Z",
+      "updatedAt": "2025-01-01T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "The Murder of Roger Ackroyd",
+      "authorId": 2,
+      "year": 1926,
+      "tags": ["mystery"],
+      "coverUrl": "https://picsum.photos/120?11",
+      "description": "One of Agatha Christie’s most famous whodunits...",
+      "createdAt": "2025-01-01T10:00:00Z",
+      "updatedAt": "2025-01-01T10:00:00Z"
+    }
+  ]
+}
