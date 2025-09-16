@@ -1,7 +1,6 @@
 // src/stores/books.js
 import { defineStore } from 'pinia'
 import { booksAPI } from '@/services/api'
-import { useAuthorsStore } from './authors'
 
 export const useBooksStore = defineStore('books', {
   state: () => ({
@@ -125,10 +124,17 @@ export const useBooksStore = defineStore('books', {
       try {
         console.log('📝 Creating new book:', bookData.title)
         
-        // Validate author exists
-        const authorsStore = useAuthorsStore()
-        if (!authorsStore.authorById(bookData.authorId)) {
-          throw new Error('Selected author does not exist')
+        // Basic validation
+        if (!bookData.title || !bookData.title.trim()) {
+          throw new Error('Book title is required')
+        }
+        
+        if (!bookData.authorId) {
+          throw new Error('Author selection is required')
+        }
+        
+        if (!bookData.description || !bookData.description.trim()) {
+          throw new Error('Book description is required')
         }
 
         const data = await booksAPI.create(bookData)
@@ -154,17 +160,24 @@ export const useBooksStore = defineStore('books', {
       try {
         console.log(`📝 Updating book ID: ${id}`)
         
-        // Validate author exists
-        const authorsStore = useAuthorsStore()
-        if (!authorsStore.authorById(bookData.authorId)) {
-          throw new Error('Selected author does not exist')
+        // Basic validation
+        if (!bookData.title || !bookData.title.trim()) {
+          throw new Error('Book title is required')
+        }
+        
+        if (!bookData.authorId) {
+          throw new Error('Author selection is required')
+        }
+        
+        if (!bookData.description || !bookData.description.trim()) {
+          throw new Error('Book description is required')
         }
 
         const data = await booksAPI.update(id, bookData)
         
         const index = this.list.findIndex((b) => b.id === parseInt(id))
         if (index !== -1) {
-          this.list[index] = data
+          this.list[index] = dat  a
         }
         this.selected = data
         

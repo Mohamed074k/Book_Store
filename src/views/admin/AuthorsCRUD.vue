@@ -65,7 +65,7 @@
       </div>
     </div>
 
-    <!-- Search -->
+    <!-- Search and Filters -->
     <div class="bg-white rounded-2xl p-6 shadow-lg mb-8 animate-fade-in-up animation-delay-600">
       <div class="flex space-x-4">
         <div class="flex-1 relative">
@@ -108,24 +108,22 @@
     </div>
 
     <!-- Loading State -->
-    <div v-if="authors.loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div v-for="n in 6" :key="n" class="bg-white rounded-2xl p-6 shadow-lg animate-pulse">
-        <div class="flex items-center space-x-4 mb-4">
+    <div v-if="authors.loading" class="space-y-4">
+      <div v-for="n in 5" :key="n" class="bg-white rounded-2xl p-6 shadow-lg animate-pulse">
+        <div class="flex items-center space-x-4">
           <div class="w-16 h-16 bg-gray-200 rounded-full"></div>
           <div class="flex-1 space-y-2">
             <div class="h-4 bg-gray-200 rounded w-3/4"></div>
             <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+            <div class="h-3 bg-gray-200 rounded w-1/4"></div>
           </div>
-        </div>
-        <div class="space-y-2">
-          <div class="h-3 bg-gray-200 rounded"></div>
-          <div class="h-3 bg-gray-200 rounded w-5/6"></div>
+          <div class="w-20 h-8 bg-gray-200 rounded"></div>
         </div>
       </div>
     </div>
 
-    <!-- Authors Grid -->
-    <div v-else-if="filteredAuthors.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Authors List (Row Layout) -->
+    <div v-else-if="filteredAuthors.length > 0" class="space-y-4">
       <div
         v-for="(author, index) in filteredAuthors"
         :key="author.id"
@@ -133,87 +131,95 @@
         :style="{ animationDelay: `${index * 100}ms` }"
       >
         <div class="p-6">
-          <!-- Author Header -->
-          <div class="flex items-center space-x-4 mb-4">
-            <img
-              :src="author.avatarUrl"
-              :alt="author.name"
-              class="w-16 h-16 rounded-full object-cover border-2 border-purple-100"
-              @error="handleImageError"
-            />
-            <div class="flex-1 min-w-0">
-              <h3 class="text-lg font-semibold text-gray-800 truncate">{{ author.name }}</h3>
-              <p class="text-sm text-gray-500">{{ getAuthorBooksCount(author.id) }} books</p>
+          <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-6">
+            <!-- Author Avatar -->
+            <div class="flex-shrink-0">
+              <img
+                :src="author.avatarUrl"
+                :alt="author.name"
+                class="w-16 h-16 object-cover rounded-full border-2 border-purple-100 shadow-md"
+                @error="handleImageError"
+              />
             </div>
-            
-            <!-- Action Dropdown -->
-            <div class="relative">
-              <button
-                @click="toggleDropdown(author.id)"
-                class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                </svg>
-              </button>
-              
-              <!-- Dropdown Menu -->
-              <div v-if="activeDropdown === author.id" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 z-10">
-                <router-link
-                  :to="{ name: 'AdminAuthorEdit', params: { id: author.id } }"
-                  class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 rounded-t-xl"
-                  @click="activeDropdown = null"
-                >
-                  <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                  </svg>
-                  Edit Author
-                </router-link>
-                <router-link
-                  :to="{ name: 'AuthorDetail', params: { id: author.id } }"
-                  class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50"
-                  @click="activeDropdown = null"
-                >
-                  <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                  </svg>
-                  View Profile
-                </router-link>
-                <button
-                  @click="confirmDelete(author)"
-                  class="flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 rounded-b-xl"
-                >
-                  <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                  </svg>
-                  Delete Author
-                </button>
+
+            <!-- Author Details -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-800 mb-1 truncate">
+                    {{ author.name }}
+                  </h3>
+                  <p class="text-purple-600 font-medium text-sm mb-2">
+                    {{ getAuthorBooksCount(author.id) }} book{{ getAuthorBooksCount(author.id) !== 1 ? 's' : '' }}
+                  </p>
+                  <div class="flex items-center text-xs text-gray-500 space-x-4 mb-3">
+                    <span>Joined: {{ formatDate(author.createdAt) }}</span>
+                    <span>•</span>
+                    <span>Updated: {{ formatDate(author.updatedAt) }}</span>
+                  </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex space-x-2 ml-4">
+                  <router-link
+                    :to="{ name: 'AdminAuthorEdit', params: { id: author.id } }"
+                    class="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors duration-300"
+                    title="Edit Author"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  </router-link>
+                  
+                  <router-link
+                    :to="{ name: 'AuthorDetail', params: { id: author.id } }"
+                    class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors duration-300"
+                    title="View Profile"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                  </router-link>
+
+                  <button
+                    @click="confirmDelete(author)"
+                    class="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors duration-300"
+                    title="Delete Author"
+                  >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- Bio -->
-          <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ author.bio }}</p>
-
-          <!-- Stats -->
-          <div class="flex justify-between items-center text-xs text-gray-500 mb-4">
-            <span>Joined: {{ formatDate(author.createdAt) }}</span>
-            <span>Updated: {{ formatDate(author.updatedAt) }}</span>
-          </div>
-
-          <!-- Recent Books -->
-          <div v-if="getAuthorBooks(author.id).length > 0" class="border-t pt-4">
-            <h4 class="text-sm font-medium text-gray-700 mb-2">Recent Books:</h4>
-            <div class="flex space-x-2">
-              <img
-                v-for="book in getAuthorBooks(author.id).slice(0, 3)"
-                :key="book.id"
-                :src="book.coverUrl"
-                :alt="book.title"
-                class="w-8 h-10 rounded object-cover shadow-sm"
-                @error="handleBookImageError"
-              />
+          <div class="mt-4 pt-4 border-t border-gray-100">
+            <p class="text-gray-700 text-sm line-clamp-2 mb-3">{{ author.bio }}</p>
+            
+            <!-- Recent Books -->
+            <div v-if="getAuthorBooks(author.id).length > 0" class="flex items-center space-x-3">
+              <span class="text-xs font-medium text-gray-600">Recent books:</span>
+              <div class="flex space-x-2">
+                <img
+                  v-for="book in getAuthorBooks(author.id).slice(0, 3)"
+                  :key="book.id"
+                  :src="book.coverUrl"
+                  :alt="book.title"
+                  :title="book.title"
+                  class="w-8 h-10 rounded object-cover shadow-sm border hover:scale-110 transition-transform duration-200"
+                  @error="handleBookImageError"
+                />
+                <span v-if="getAuthorBooks(author.id).length > 3" class="flex items-center justify-center w-8 h-10 bg-gray-100 rounded text-xs text-gray-500 font-medium">
+                  +{{ getAuthorBooks(author.id).length - 3 }}
+                </span>
+              </div>
+            </div>
+            <div v-else class="text-xs text-gray-400 italic">
+              No books published yet
             </div>
           </div>
         </div>
@@ -272,14 +278,11 @@
         </div>
       </div>
     </div>
-
-    <!-- Click outside to close dropdown -->
-    <div v-if="activeDropdown" @click="activeDropdown = null" class="fixed inset-0 z-0"></div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthorsStore } from '@/stores/authors'
 import { useBooksStore } from '@/stores/books'
 
@@ -287,7 +290,6 @@ const authors = useAuthorsStore()
 const books = useBooksStore()
 
 const searchQuery = ref('')
-const activeDropdown = ref(null)
 const showDeleteModal = ref(false)
 const authorToDelete = ref(null)
 
@@ -329,14 +331,9 @@ const clearSearch = () => {
   searchQuery.value = ''
 }
 
-const toggleDropdown = (authorId) => {
-  activeDropdown.value = activeDropdown.value === authorId ? null : authorId
-}
-
 const confirmDelete = (author) => {
   authorToDelete.value = author
   showDeleteModal.value = true
-  activeDropdown.value = null
 }
 
 const deleteAuthor = async () => {
@@ -364,20 +361,7 @@ const loadAuthors = async () => {
   ])
 }
 
-const handleClickOutside = (event) => {
-  if (!event.target.closest('.relative')) {
-    activeDropdown.value = null
-  }
-}
-
-onMounted(() => {
-  loadAuthors()
-  document.addEventListener('click', handleClickOutside)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
+onMounted(loadAuthors)
 </script>
 
 <style scoped>
@@ -417,9 +401,9 @@ onBeforeUnmount(() => {
   animation-delay: 600ms;
 }
 
-.line-clamp-3 {
+.line-clamp-2 {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
