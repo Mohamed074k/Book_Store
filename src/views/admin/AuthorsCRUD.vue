@@ -65,9 +65,9 @@
       </div>
     </div>
 
-    <!-- Search and Filters -->
+   <!-- Search and Filters -->
     <div class="bg-white rounded-2xl p-6 shadow-lg mb-8 animate-fade-in-up animation-delay-600">
-      <div class="flex space-x-4">
+      <div class="flex flex-col md:flex-row gap-4">
         <div class="flex-1 relative">
           <input
             v-model="searchQuery"
@@ -76,24 +76,26 @@
             class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-400 transition-all duration-300"
           />
           <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5极速a7 7 0 11-14 0 7 7 极速0 0114 0z"></path>
           </svg>
         </div>
-        <button
-          @click="clearSearch"
-          class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors duration-300 font-medium"
-        >
-          Clear
-        </button>
-        <button
-          @click="loadAuthors"
-          class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors duration-300 font-medium"
-        >
-          Refresh
-        </button>
+        <div class="flex flex-row gap-2">
+          <button
+            @click="clearSearch"
+            class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors duration-300 font-medium"
+          >
+            Clear
+          </button>
+          <button
+            @click="loadAuthors"
+            class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors duration-300 font-medium"
+          >
+            Refresh
+          </button>
+        </div>
       </div>
     </div>
-
+    
     <!-- Error State -->
     <div v-if="authors.error" class="bg-red-50 border border-red-200 rounded-2xl p-6 mb-8">
       <div class="flex items-center">
@@ -118,6 +120,10 @@
             <div class="h-3 bg-gray-200 rounded w-1/4"></div>
           </div>
           <div class="w-20 h-8 bg-gray-200 rounded"></div>
+        </div>
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <div class="h-4 bg-gray-200 rounded w-full"></div>
+          <div class="h-4 bg-gray-200 rounded w-2/3 mt-2"></div>
         </div>
       </div>
     </div>
@@ -144,8 +150,8 @@
 
             <!-- Author Details -->
             <div class="flex-1 min-w-0">
-              <div class="flex items-start justify-between">
-                <div>
+              <div class="flex flex-col md:flex-row md:items-start md:justify-between">
+                <div class="flex-1">
                   <h3 class="text-lg font-semibold text-gray-800 mb-1 truncate">
                     {{ author.name }}
                   </h3>
@@ -154,13 +160,13 @@
                   </p>
                   <div class="flex items-center text-xs text-gray-500 space-x-4 mb-3">
                     <span>Joined: {{ formatDate(author.createdAt) }}</span>
-                    <span>•</span>
+                    <span class="hidden md:inline">•</span>
                     <span>Updated: {{ formatDate(author.updatedAt) }}</span>
                   </div>
                 </div>
 
-                <!-- Actions -->
-                <div class="flex space-x-2 ml-4">
+                <!-- Actions - Now positioned at top right for mobile -->
+                <div class="flex justify-end md:justify-start space-x-2 mb-4 md:mb-0 md:ml-4">
                   <router-link
                     :to="{ name: 'AdminAuthorEdit', params: { id: author.id } }"
                     class="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors duration-300"
@@ -245,7 +251,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
         </svg>
         Add Your First Author
-      </router-link>
+        </router-link>
     </div>
 
     <!-- Delete Confirmation Modal -->
@@ -262,7 +268,7 @@
           <p class="text-sm text-red-600">This will also delete all books by this author. This action cannot be undone.</p>
         </div>
         
-        <div class="flex space-x-4">
+        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
           <button
             @click="showDeleteModal = false"
             class="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-2xl hover:bg-gray-200 transition-colors duration-300 font-medium"
@@ -406,5 +412,36 @@ onMounted(loadAuthors)
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  .p-8 {
+    padding: 1.5rem;
+  }
+  
+  .mb-8 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .grid.grid-cols-1 {
+    gap: 1rem;
+  }
+  
+  .bg-white.rounded-2xl.p-6 {
+    padding: 1rem;
+  }
+  
+  .flex.flex-col.gap-4 > div:first-child {
+    width: 100%;
+  }
+  
+  .flex.flex-col.gap-2 {
+    width: 100%;
+  }
+  
+  .flex.flex-col.gap-2 button {
+    width: 100%;
+  }
 }
 </style>

@@ -109,9 +109,9 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <div class=" grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
       <!-- Books Management -->
-      <div class="bg-white rounded-2xl p-6 shadow-lg animate-fade-in-up animation-delay-800">
+      <div class="bg-white rounded-2xl p-3 shadow-lg animate-fade-in-up animation-delay-800">
         <div class="flex items-center justify-between mb-6">
           <div class="flex items-center space-x-3">
             <div class="p-2 bg-blue-100 rounded-xl">
@@ -126,7 +126,7 @@
           </div>
           <router-link
             to="/admin/books/new"
-            class="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-300 text-sm font-medium"
+            class="inline-flex items-center bg-blue-600 text-white p-1 rounded-xl hover:bg-blue-700 transition-colors duration-300 text-sm font-medium"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -164,7 +164,7 @@
       </div>
 
       <!-- Authors Management -->
-      <div class="bg-white rounded-2xl p-6 shadow-lg animate-fade-in-up animation-delay-1000">
+      <div class=" bg-white rounded-2xl p-3 shadow-lg animate-fade-in-up animation-delay-1000">
         <div class="flex items-center justify-between mb-6">
           <div class="flex items-center space-x-3">
             <div class="p-2 bg-purple-100 rounded-xl">
@@ -179,7 +179,7 @@
           </div>
           <router-link
             to="/admin/authors/new"
-            class="inline-flex items-center bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 transition-colors duration-300 text-sm font-medium"
+            class="inline-flex items-center bg-purple-600 text-white p-1 rounded-xl hover:bg-purple-700 transition-colors duration-300 text-sm font-medium"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>

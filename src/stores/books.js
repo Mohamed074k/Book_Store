@@ -1,6 +1,7 @@
 // src/stores/books.js
 import { defineStore } from 'pinia'
 import { booksAPI } from '@/services/api'
+import { normalizeId, ensureNumericId } from '@/utils/idHelpers'
 
 export const useBooksStore = defineStore('books', {
   state: () => ({
@@ -13,13 +14,21 @@ export const useBooksStore = defineStore('books', {
 
   getters: {
     bookById: (state) => (id) => {
-      const numId = parseInt(id)
-      return state.list.find((book) => book.id === numId)
+      // Handle both string and number IDs
+      const searchId = typeof id === 'string' ? parseInt(id) : id
+      return state.list.find((book) => {
+        const bookId = typeof book.id === 'string' ? parseInt(book.id) : book.id
+        return bookId === searchId
+      })
     },
 
     booksByAuthorId: (state) => (authorId) => {
-      const numAuthorId = parseInt(authorId)
-      return state.list.filter((b) => b.authorId === numAuthorId)
+      // Handle both string and number IDs
+      const searchAuthorId = typeof authorId === 'string' ? parseInt(authorId) : authorId
+      return state.list.filter((b) => {
+        const bookAuthorId = typeof b.authorId === 'string' ? parseInt(b.authorId) : b.authorId
+        return bookAuthorId === searchAuthorId
+      })
     },
 
     filteredBooks: (state) => (titleQuery, authorId) => {
@@ -42,14 +51,17 @@ export const useBooksStore = defineStore('books', {
     },
 
     duplicateTitleExists: (state) => (title, authorId, currentBookId) => {
-      const numAuthorId = parseInt(authorId)
-      const numCurrentBookId = currentBookId ? parseInt(currentBookId) : null
+      const searchAuthorId = typeof authorId === 'string' ? parseInt(authorId) : authorId
+      const searchCurrentBookId = currentBookId ? (typeof currentBookId === 'string' ? parseInt(currentBookId) : currentBookId) : null
       
       return state.list.some(
-        (b) =>
-          b.title.toLowerCase() === title.toLowerCase() &&
-          b.authorId === numAuthorId &&
-          b.id !== numCurrentBookId
+        (b) => {
+          const bookAuthorId = typeof b.authorId === 'string' ? parseInt(b.authorId) : b.authorId
+          const bookId = typeof b.id === 'string' ? parseInt(b.id) : b.id
+          return b.title.toLowerCase() === title.toLowerCase() &&
+                 bookAuthorId === searchAuthorId &&
+                 bookId !== searchCurrentBookId
+        }
       )
     },
 
@@ -66,8 +78,8 @@ export const useBooksStore = defineStore('books', {
       )
     },
   },
-
-  actions: {
+ 
+    actions: {
     async fetchList() {
       this.loading = true
       this.error = null
@@ -76,9 +88,10 @@ export const useBooksStore = defineStore('books', {
         console.log('📚 Fetching books list...')
         const data = await booksAPI.getAll()
         
-        this.list = Array.isArray(data) ? data : []
-        this.lastFetchedAt = new Date()
+        // Use the helper function to normalize IDs
+        this.list = ensureNumericId(data) || []
         
+        this.lastFetchedAt = new Date()
         console.log(`✅ Successfully loaded ${this.list.length} books`)
       } catch (err) {
         console.error('❌ Error fetching books:', err)
@@ -97,17 +110,24 @@ export const useBooksStore = defineStore('books', {
         console.log(`📖 Fetching book with ID: ${id}`)
         const data = await booksAPI.getById(id)
         
-        this.selected = data
+        // Use the helper function to normalize IDs
+        const normalizedData = ensureNumericId(data)
+        
+        this.selected = normalizedData
         
         // Also add to list if not already there
-        const existingIndex = this.list.findIndex(book => book.id === data.id)
+        const normalizedId = normalizeId(normalizedData.id)
+        const existingIndex = this.list.findIndex(book => 
+          normalizeId(book.id) === normalizedId
+        )
+        
         if (existingIndex === -1) {
-          this.list.push(data)
+          this.list.push(normalizedData)
         } else {
-          this.list[existingIndex] = data
+          this.list[existingIndex] = normalizedData
         }
         
-        console.log(`✅ Successfully loaded book: ${data.title}`)
+        console.log(`✅ Successfully loaded book: ${normalizedData.title}`)
       } catch (err) {
         console.error('❌ Error fetching book:', err)
         this.error = err.message || 'Book not found'
@@ -139,11 +159,18 @@ export const useBooksStore = defineStore('books', {
 
         const data = await booksAPI.create(bookData)
         
-        this.list.push(data)
-        this.selected = data
+        // Normalize IDs to numbers
+        const normalizedData = {
+          ...data,
+          id: typeof data.id === 'string' ? parseInt(data.id) : data.id,
+          authorId: typeof data.authorId === 'string' ? parseInt(data.authorId) : data.authorId
+        }
         
-        console.log(`✅ Successfully created book: ${data.title}`)
-        return data
+        this.list.push(normalizedData)
+        this.selected = normalizedData
+        
+        console.log(`✅ Successfully created book: ${normalizedData.title}`)
+        return normalizedData
       } catch (err) {
         console.error('❌ Error creating book:', err)
         this.error = err.message || 'Failed to create book'
@@ -175,14 +202,26 @@ export const useBooksStore = defineStore('books', {
 
         const data = await booksAPI.update(id, bookData)
         
-        const index = this.list.findIndex((b) => b.id === parseInt(id))
-        if (index !== -1) {
-          this.list[index] = dat  a
+        // Normalize IDs to numbers
+        const normalizedData = {
+          ...data,
+          id: typeof data.id === 'string' ? parseInt(data.id) : data.id,
+          authorId: typeof data.authorId === 'string' ? parseInt(data.authorId) : data.authorId
         }
-        this.selected = data
         
-        console.log(`✅ Successfully updated book: ${data.title}`)
-        return data
+        const searchId = typeof id === 'string' ? parseInt(id) : id
+        const index = this.list.findIndex((b) => {
+          const bookId = typeof b.id === 'string' ? parseInt(b.id) : b.id
+          return bookId === searchId
+        })
+        
+        if (index !== -1) {
+          this.list[index] = normalizedData
+        }
+        this.selected = normalizedData
+        
+        console.log(`✅ Successfully updated book: ${normalizedData.title}`)
+        return normalizedData
       } catch (err) {
         console.error('❌ Error updating book:', err)
         this.error = err.message || 'Failed to update book'
@@ -201,9 +240,18 @@ export const useBooksStore = defineStore('books', {
         
         await booksAPI.delete(id)
         
-        this.list = this.list.filter((b) => b.id !== parseInt(id))
-        if (this.selected?.id === parseInt(id)) {
-          this.selected = null
+        const searchId = typeof id === 'string' ? parseInt(id) : id
+        
+        this.list = this.list.filter((b) => {
+          const bookId = typeof b.id === 'string' ? parseInt(b.id) : b.id
+          return bookId !== searchId
+        })
+        
+        if (this.selected) {
+          const selectedId = typeof this.selected.id === 'string' ? parseInt(this.selected.id) : this.selected.id
+          if (selectedId === searchId) {
+            this.selected = null
+          }
         }
         
         console.log(`✅ Successfully deleted book`)

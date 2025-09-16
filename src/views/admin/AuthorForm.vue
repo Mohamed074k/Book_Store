@@ -122,7 +122,7 @@
                   v-model="form.bio"
                   rows="8"
                   required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-400 transition-all duration-300 resize-none"
+                  class=" w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-400 transition-all duration-300 resize-none"
                   :class="{ 'border-red-500': errors.bio }"
                   placeholder="Write a compelling biography about the author, their background, writing style, achievements, and notable works..."
                 ></textarea>
@@ -224,6 +224,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthorsStore } from '@/stores/authors'
 import { useBooksStore } from '@/stores/books'
+import { normalizeId } from '@/utils/idHelpers'
 
 const route = useRoute()
 const router = useRouter()
@@ -296,10 +297,9 @@ const handleImageError = (event) => {
 const handleBookImageError = (event) => {
   event.target.src = 'https://via.placeholder.com/40x48/e5e7eb/9ca3af?text=Book'
 }
-
 const loadAuthorData = async () => {
   if (isEditing.value) {
-    const authorId = parseInt(props.id)
+    const authorId = normalizeId(props.id) // Use normalizeId here
     const existingAuthor = authors.authorById(authorId)
     
     if (existingAuthor) {
@@ -336,7 +336,7 @@ const handleSubmit = async () => {
 
   try {
     if (isEditing.value) {
-      await authors.update(parseInt(props.id), authorData)
+      await authors.update(normalizeId(props.id), authorData) // Use normalizeId here
     } else {
       await authors.create(authorData)
     }
@@ -346,6 +346,7 @@ const handleSubmit = async () => {
     console.error('Error saving author:', error)
   }
 }
+
 
 const loadData = async () => {
   await Promise.all([

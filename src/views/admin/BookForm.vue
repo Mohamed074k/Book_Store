@@ -321,7 +321,13 @@ const validateForm = () => {
     errors.value.authorId = 'Please select an author'
   } else {
     // Check if the selected author actually exists in the loaded authors list
-    const selectedAuthor = authors.authorById(form.value.authorId)
+    // Handle both string and number IDs
+    const selectedAuthorId = typeof form.value.authorId === 'string' ? parseInt(form.value.authorId) : form.value.authorId
+    const selectedAuthor = authors.list.find(author => {
+      const authorId = typeof author.id === 'string' ? parseInt(author.id) : author.id
+      return authorId === selectedAuthorId
+    })
+    
     if (!selectedAuthor) {
       errors.value.authorId = 'Selected author is invalid. Please refresh and try again.'
     }
@@ -338,8 +344,14 @@ const validateForm = () => {
   }
 
   // Check for duplicate title by same author (only if author is valid)
-  if (form.value.authorId && authors.authorById(form.value.authorId)) {
-    if (books.duplicateTitleExists(form.value.title, form.value.authorId, isEditing.value ? parseInt(props.id) : null)) {
+  if (form.value.authorId) {
+    const selectedAuthorId = typeof form.value.authorId === 'string' ? parseInt(form.value.authorId) : form.value.authorId
+    const selectedAuthor = authors.list.find(author => {
+      const authorId = typeof author.id === 'string' ? parseInt(author.id) : author.id
+      return authorId === selectedAuthorId
+    })
+    
+    if (selectedAuthor && books.duplicateTitleExists(form.value.title, selectedAuthorId, isEditing.value ? parseInt(props.id) : null)) {
       errors.value.title = 'This author already has a book with this title'
     }
   }
@@ -445,7 +457,12 @@ const handleSubmit = async () => {
   }
 
   // Double-check that the author exists before submission
-  const selectedAuthor = authors.authorById(form.value.authorId)
+  const selectedAuthorId = typeof form.value.authorId === 'string' ? parseInt(form.value.authorId) : form.value.authorId
+  const selectedAuthor = authors.list.find(author => {
+    const authorId = typeof author.id === 'string' ? parseInt(author.id) : author.id
+    return authorId === selectedAuthorId
+  })
+  
   if (!selectedAuthor) {
     errors.value.authorId = 'Selected author does not exist. Please refresh the page and try again.'
     return
@@ -453,7 +470,7 @@ const handleSubmit = async () => {
 
   const bookData = {
     title: form.value.title.trim(),
-    authorId: parseInt(form.value.authorId), // Ensure it's a number
+    authorId: selectedAuthorId, // Use the normalized ID
     year: form.value.year,
     tags: form.value.tags,
     coverUrl: uploadedImageUrl.value || form.value.coverUrl.trim() || placeholderImage,
