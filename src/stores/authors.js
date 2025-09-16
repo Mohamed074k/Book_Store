@@ -13,10 +13,14 @@ export const useAuthorsStore = defineStore('authors', {
   }),
 
   getters: {
-    // Get author by ID (safely converts string to number)
+    // Get author by ID (safely converts string to number and handles both types)
     authorById: (state) => (id) => {
-      const numId = parseInt(id)
-      return state.list.find((author) => author.id === numId)
+      // Handle both string and number IDs
+      const searchId = typeof id === 'string' ? parseInt(id) : id
+      return state.list.find((author) => {
+        const authorId = typeof author.id === 'string' ? parseInt(author.id) : author.id
+        return authorId === searchId
+      })
     },
 
     // Filter authors by search term (name or bio)
@@ -34,16 +38,18 @@ export const useAuthorsStore = defineStore('authors', {
     // Get all authors who have at least one book
     authorsWithBooks: (state) => {
       const booksStore = useBooksStore()
-      return state.list.filter(author =>
-        booksStore.booksByAuthorId(author.id).length > 0
-      )
+      return state.list.filter(author => {
+        const authorId = typeof author.id === 'string' ? parseInt(author.id) : author.id
+        return booksStore.booksByAuthorId(authorId).length > 0
+      })
     },
 
     // Count total books across all authors
     totalBooksByAuthor: (state) => {
       const booksStore = useBooksStore()
       return state.list.reduce((total, author) => {
-        return total + booksStore.booksByAuthorId(author.id).length
+        const authorId = typeof author.id === 'string' ? parseInt(author.id) : author.id
+        return total + booksStore.booksByAuthorId(authorId).length
       }, 0)
     },
 
@@ -66,7 +72,12 @@ export const useAuthorsStore = defineStore('authors', {
         const response = await api.get('/authors')
         const data = response.data
 
-        this.list = Array.isArray(data) ? data : []
+        // Normalize IDs to numbers
+        this.list = Array.isArray(data) ? data.map(author => ({
+          ...author,
+          id: typeof author.id === 'string' ? parseInt(author.id) : author.id
+        })) : []
+        
         this.lastFetchedAt = new Date()
 
         console.log(`✅ Successfully loaded ${this.list.length} authors`)
@@ -88,17 +99,28 @@ export const useAuthorsStore = defineStore('authors', {
         const response = await api.get(`/authors/${id}`)
         const data = response.data
 
-        this.selected = data
-
-        // Add/update in list if not present
-        const existingIndex = this.list.findIndex((a) => a.id === data.id)
-        if (existingIndex === -1) {
-          this.list.push(data)
-        } else {
-          this.list[existingIndex] = data
+        // Normalize ID to number
+        const normalizedData = {
+          ...data,
+          id: typeof data.id === 'string' ? parseInt(data.id) : data.id
         }
 
-        console.log(`✅ Successfully loaded author: ${data.name}`)
+        this.selected = normalizedData
+
+        // Add/update in list if not present
+        const existingIndex = this.list.findIndex((a) => {
+          const authorId = typeof a.id === 'string' ? parseInt(a.id) : a.id
+          const dataId = typeof normalizedData.id === 'string' ? parseInt(normalizedData.id) : normalizedData.id
+          return authorId === dataId
+        })
+        
+        if (existingIndex === -1) {
+          this.list.push(normalizedData)
+        } else {
+          this.list[existingIndex] = normalizedData
+        }
+
+        console.log(`✅ Successfully loaded author: ${normalizedData.name}`)
       } catch (err) {
         console.error('❌ Error fetching author:', err)
         this.error = err.response?.data?.message || 'Author not found'
@@ -138,34 +160,20 @@ export const useAuthorsStore = defineStore('authors', {
           throw new Error(`An author named "${existingAuthor.name}" already exists`)
         }
 
-        // Prepare data with timestamps
-        const currentTimestamp = new Date().toISOString()
-        const authorPayload = {
-          ...authorData,
-          createdAt: currentTimestamp,
-          updatedAt: currentTimestamp,
-          // Ensure we have a default avatar if none provided
-          avatarUrl: authorData.avatarUrl || 'https://via.placeholder.com/96x96/e5e7eb/9ca3af?text=Author'
+        const response = await api.post('/authors', authorData)
+        const data = response.data
+
+        // Normalize ID to number
+        const normalizedData = {
+          ...data,
+          id: typeof data.id === 'string' ? parseInt(data.id) : data.id
         }
 
-        const response = await api.post('/authors', authorPayload)
-        let data = response.data
+        this.list.push(normalizedData)
+        this.selected = normalizedData
 
-        // Ensure the response has timestamps (fallback if API doesn't return them)
-        if (!data.createdAt) {
-          data = {
-            ...data,
-            createdAt: currentTimestamp,
-            updatedAt: currentTimestamp
-          }
-        }
-
-        // Add to the beginning of the list (newest first)
-        this.list.unshift(data)
-        this.selected = data
-
-        console.log(`✅ Successfully created author: ${data.name}`)
-        return data
+        console.log(`✅ Successfully created author: ${normalizedData.name}`)
+        return normalizedData
       } catch (err) {
         console.error('❌ Error creating author:', err)
         this.error = err.message || 'Failed to create author'
@@ -196,41 +204,41 @@ export const useAuthorsStore = defineStore('authors', {
           throw new Error('Avatar URL must be a valid URL')
         }
 
+        const searchId = typeof id === 'string' ? parseInt(id) : id
+
         // Prevent duplicate names (ignore current author)
         const existingAuthor = this.list.find(
-          (a) =>
-            a.name.toLowerCase().trim() === authorData.name.toLowerCase().trim() &&
-            a.id !== parseInt(id)
+          (a) => {
+            const authorId = typeof a.id === 'string' ? parseInt(a.id) : a.id
+            return a.name.toLowerCase().trim() === authorData.name.toLowerCase().trim() &&
+                   authorId !== searchId
+          }
         )
         if (existingAuthor) {
           throw new Error(`An author named "${existingAuthor.name}" already exists`)
         }
 
-        // Add updated timestamp
-        const authorPayload = {
-          ...authorData,
-          updatedAt: new Date().toISOString()
+        const response = await api.put(`/authors/${id}`, authorData)
+        const data = response.data
+
+        // Normalize ID to number
+        const normalizedData = {
+          ...data,
+          id: typeof data.id === 'string' ? parseInt(data.id) : data.id
         }
 
-        const response = await api.put(`/authors/${id}`, authorPayload)
-        let data = response.data
-
-        // Ensure the response has updatedAt (fallback if API doesn't return it)
-        if (!data.updatedAt) {
-          data = {
-            ...data,
-            updatedAt: new Date().toISOString()
-          }
-        }
-
-        const index = this.list.findIndex((a) => a.id === parseInt(id))
+        const index = this.list.findIndex((a) => {
+          const authorId = typeof a.id === 'string' ? parseInt(a.id) : a.id
+          return authorId === searchId
+        })
+        
         if (index !== -1) {
-          this.list[index] = data
+          this.list[index] = normalizedData
         }
-        this.selected = data
+        this.selected = normalizedData
 
-        console.log(`✅ Successfully updated author: ${data.name}`)
-        return data
+        console.log(`✅ Successfully updated author: ${normalizedData.name}`)
+        return normalizedData
       } catch (err) {
         console.error('❌ Error updating author:', err)
         this.error = err.message || 'Failed to update author'
@@ -249,9 +257,18 @@ export const useAuthorsStore = defineStore('authors', {
 
         await api.delete(`/authors/${id}`)
 
-        this.list = this.list.filter((a) => a.id !== parseInt(id))
-        if (this.selected?.id === parseInt(id)) {
-          this.selected = null
+        const searchId = typeof id === 'string' ? parseInt(id) : id
+        
+        this.list = this.list.filter((a) => {
+          const authorId = typeof a.id === 'string' ? parseInt(a.id) : a.id
+          return authorId !== searchId
+        })
+        
+        if (this.selected) {
+          const selectedId = typeof this.selected.id === 'string' ? parseInt(this.selected.id) : this.selected.id
+          if (selectedId === searchId) {
+            this.selected = null
+          }
         }
 
         console.log(`✅ Successfully deleted author`)
@@ -262,12 +279,6 @@ export const useAuthorsStore = defineStore('authors', {
       } finally {
         this.loading = false
       }
-    },
-
-    // Refresh authors list (useful after creating/updating)
-    async refresh() {
-      console.log('🔄 Refreshing authors list...')
-      await this.fetchList()
     },
 
     // Clear any active error
