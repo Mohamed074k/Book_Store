@@ -12,7 +12,7 @@
       </div>
       
       <div class="container mx-auto px-4 text-center relative">
-        <h1 class="text-5xl font-bold mb-6 animate-fade-in-up">About Bookshelf</h1>
+        <h1 class="text-5xl font-bold mb-6 animate-fade-in-up">About NovelHub</h1>
         <p class="text-xl opacity-90 max-w-3xl mx-auto animate-fade-in-up animation-delay-200">
           Your ultimate destination for discovering exceptional books and connecting with brilliant authors
         </p>
@@ -27,7 +27,7 @@
           <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 animate-fade-in-up">
             <h2 class="text-3xl font-bold mb-6 text-gradient-primary">Our Story</h2>
             <p class="text-lg text-gray-700 leading-relaxed mb-6">
-              Bookshelf is a modern, responsive single-page application built with Vue 3 and Tailwind CSS to help readers discover great books and authors. We believe that every story has the power to inspire, educate, and transform lives.
+              NovelHub is a modern, responsive single-page application built with Vue 3 and Tailwind CSS to help readers discover great books and authors. We believe that every story has the power to inspire, educate, and transform lives.
             </p>
             <p class="text-lg text-gray-700 leading-relaxed">
               Our platform combines cutting-edge technology with a passion for literature, creating an immersive experience that connects readers with their next favorite book and introduces them to the talented minds behind those stories.
@@ -103,24 +103,42 @@
         <div class="max-w-4xl mx-auto">
           <h2 class="text-3xl font-bold text-center mb-12 text-gradient-primary animate-fade-in-up">Frequently Asked Questions</h2>
           <div class="space-y-6">
-            <div class="glass-effect rounded-3xl p-8 shadow-xl hover-lift animate-fade-in-up">
-              <h3 class="text-xl font-bold text-gray-800 mb-3">How do I search for books?</h3>
-              <p class="text-gray-600 leading-relaxed">Use the search bar on the Books page to filter by title, or use the author dropdown to find books by specific authors. You can combine both filters for more precise results.</p>
-            </div>
-            
-            <div class="glass-effect rounded-3xl p-8 shadow-xl hover-lift animate-fade-in-up animation-delay-200">
-              <h3 class="text-xl font-bold text-gray-800 mb-3">Can I manage the book collection?</h3>
-              <p class="text-gray-600 leading-relaxed">Yes! Admin users can create, edit, and delete books and authors via the Admin Dashboard. The interface is intuitive and designed for easy content management.</p>
-            </div>
-            
-            <div class="glass-effect rounded-3xl p-8 shadow-xl hover-lift animate-fade-in-up animation-delay-400">
-              <h3 class="text-xl font-bold text-gray-800 mb-3">Is this app mobile-friendly?</h3>
-              <p class="text-gray-600 leading-relaxed">Absolutely! The app is designed with a mobile-first approach using Tailwind CSS, ensuring a beautiful experience across all devices and screen sizes.</p>
-            </div>
-            
-            <div class="glass-effect rounded-3xl p-8 shadow-xl hover-lift animate-fade-in-up animation-delay-600">
-              <h3 class="text-xl font-bold text-gray-800 mb-3">What technologies power this platform?</h3>
-              <p class="text-gray-600 leading-relaxed">Bookshelf is built with Vue 3, Pinia for state management, Vue Router for navigation, and Tailwind CSS for styling. It's a modern single-page application optimized for performance.</p>
+            <div 
+              v-for="(faq, index) in faqs"
+              :key="index"
+              class="glass-effect rounded-3xl shadow-xl hover-lift animate-fade-in-up transition-all duration-300"
+              :class="{ 'animate-fade-in-up animation-delay-200': index === 1, 'animate-fade-in-up animation-delay-400': index === 2, 'animate-fade-in-up animation-delay-600': index === 3 }"
+            >
+              <button 
+                @click="toggleFaq(index)"
+                class="w-full p-8 text-left focus:outline-none group"
+              >
+                <div class="flex justify-between items-start">
+                  <h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-purple-600 transition-colors duration-300 flex-1 pr-4">
+                    {{ faq.question }}
+                  </h3>
+                  <div class="flex-shrink-0 ml-4">
+                    <svg 
+                      class="w-6 h-6 text-purple-600 transition-transform duration-300"
+                      :class="{ 'rotate-180': openFaqIndex === index }"
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </div>
+                </div>
+                
+                <div 
+                  v-if="openFaqIndex === index"
+                  class="mt-4 animate-fade-in-up"
+                >
+                  <div class="border-t border-purple-200/30 pt-4">
+                    <p class="text-gray-600 leading-relaxed">{{ faq.answer }}</p>
+                  </div>
+                </div>
+              </button>
             </div>
           </div>
         </div>
@@ -141,7 +159,6 @@
           >
             Browse Books
           </router-link>
-          npx json-server --watch db.json --port 5000
           <router-link
             to="/authors"
             class="btn-accent bg-transparent border-2 border-white text-white px-8 py-4 rounded-2xl font-semibold hover:bg-white hover:text-purple-600 transition-all duration-300 glass-effect"
@@ -153,3 +170,36 @@
     </section>
   </div>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+
+const openFaqIndex = ref(null)
+
+const faqs = ref([
+  {
+    question: "How do I search for books?",
+    answer: "Use the search bar on the Books page to filter by title, or use the author dropdown to find books by specific authors. You can combine both filters for more precise results."
+  },
+  {
+    question: "Can I manage the book collection?",
+    answer: "Yes! Admin users can create, edit, and delete books and authors via the Admin Dashboard. The interface is intuitive and designed for easy content management."
+  },
+  {
+    question: "Is this app mobile-friendly?",
+    answer: "Absolutely! The app is designed with a mobile-first approach using Tailwind CSS, ensuring a beautiful experience across all devices and screen sizes."
+  },
+  {
+    question: "What technologies power this platform?",
+    answer: "NovelHub is built with Vue 3, Pinia for state management, Vue Router for navigation, and Tailwind CSS for styling. It's a modern single-page application optimized for performance."
+  }
+])
+
+const toggleFaq = (index) => {
+  if (openFaqIndex.value === index) {
+    openFaqIndex.value = null
+  } else {
+    openFaqIndex.value = index
+  }
+}
+</script>
