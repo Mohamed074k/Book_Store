@@ -1,6 +1,7 @@
 // src/stores/books.js
 import { defineStore } from 'pinia'
 import { booksAPI } from '@/services/api'
+import { normalizeId, ensureNumericId } from '@/utils/idHelpers'
 
 export const useBooksStore = defineStore('books', {
   state: () => ({
@@ -77,8 +78,8 @@ export const useBooksStore = defineStore('books', {
       )
     },
   },
-
-  actions: {
+ 
+    actions: {
     async fetchList() {
       this.loading = true
       this.error = null
@@ -87,15 +88,10 @@ export const useBooksStore = defineStore('books', {
         console.log('📚 Fetching books list...')
         const data = await booksAPI.getAll()
         
-        // Normalize IDs to numbers
-        this.list = Array.isArray(data) ? data.map(book => ({
-          ...book,
-          id: typeof book.id === 'string' ? parseInt(book.id) : book.id,
-          authorId: typeof book.authorId === 'string' ? parseInt(book.authorId) : book.authorId
-        })) : []
+        // Use the helper function to normalize IDs
+        this.list = ensureNumericId(data) || []
         
         this.lastFetchedAt = new Date()
-        
         console.log(`✅ Successfully loaded ${this.list.length} books`)
       } catch (err) {
         console.error('❌ Error fetching books:', err)
@@ -114,21 +110,16 @@ export const useBooksStore = defineStore('books', {
         console.log(`📖 Fetching book with ID: ${id}`)
         const data = await booksAPI.getById(id)
         
-        // Normalize IDs to numbers
-        const normalizedData = {
-          ...data,
-          id: typeof data.id === 'string' ? parseInt(data.id) : data.id,
-          authorId: typeof data.authorId === 'string' ? parseInt(data.authorId) : data.authorId
-        }
+        // Use the helper function to normalize IDs
+        const normalizedData = ensureNumericId(data)
         
         this.selected = normalizedData
         
         // Also add to list if not already there
-        const existingIndex = this.list.findIndex(book => {
-          const bookId = typeof book.id === 'string' ? parseInt(book.id) : book.id
-          const dataId = typeof normalizedData.id === 'string' ? parseInt(normalizedData.id) : normalizedData.id
-          return bookId === dataId
-        })
+        const normalizedId = normalizeId(normalizedData.id)
+        const existingIndex = this.list.findIndex(book => 
+          normalizeId(book.id) === normalizedId
+        )
         
         if (existingIndex === -1) {
           this.list.push(normalizedData)
