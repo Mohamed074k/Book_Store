@@ -1,0 +1,407 @@
+/* src/assets/admin-styles.css */
+
+/* Admin-specific animations and styles */
+
+/* Enhanced Table Styles */
+.admin-table {
+  @apply w-full bg-white rounded-2xl shadow-lg overflow-hidden;
+}
+
+.admin-table thead {
+  @apply bg-gradient-to-r from-gray-50 to-gray-100;
+}
+
+.admin-table th {
+  @apply px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider;
+}
+
+.admin-table td {
+  @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b border-gray-100;
+}
+
+.admin-table tbody tr {
+  @apply hover:bg-gray-50 transition-colors duration-200;
+}
+
+.admin-table tbody tr:last-child td {
+  @apply border-b-0;
+}
+
+/* Enhanced Card Animations */
+@keyframes card-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.admin-card {
+  @apply bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1;
+  animation: card-enter 0.6s ease-out;
+}
+
+.admin-card-header {
+  @apply bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4 rounded-t-2xl;
+}
+
+.admin-card-title {
+  @apply text-xl font-semibold text-white;
+}
+
+.admin-card-content {
+  @apply p-6;
+}
+
+/* Stats Card Styles */
+.stats-card {
+  @apply bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1;
+}
+
+.stats-card-icon {
+  @apply p-3 rounded-2xl;
+}
+
+.stats-card-blue .stats-card-icon {
+  @apply bg-blue-100;
+}
+
+.stats-card-purple .stats-card-icon {
+  @apply bg-purple-100;
+}
+
+.stats-card-green .stats-card-icon {
+  @apply bg-green-100;
+}
+
+.stats-card-orange .stats-card-icon {
+  @apply bg-orange-100;
+}
+
+.stats-card-red .stats-card-icon {
+  @apply bg-red-100;
+}
+
+.stats-card-value {
+  @apply text-3xl font-bold mb-2;
+}
+
+.stats-card-blue .stats-card-value {
+  @apply text-blue-600;
+}
+
+.stats-card-purple .stats-card-value {
+  @apply text-purple-600;
+}
+
+.stats-card-green .stats-card-value {
+  @apply text-green-600;
+}
+
+.stats-card-orange .stats-card-value {
+  @apply text-orange-600;
+}
+
+.stats-card-red .stats-card-value {
+  @apply text-red-600;
+}
+
+/* Form Enhancements */
+.admin-form-group {
+  @apply mb-6;
+}
+
+.admin-label {
+  @apply block text-sm font-semibold text-gray-700 mb-2;
+}
+
+.admin-input {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:border-purple-400 transition-all duration-300 bg-white;
+}
+
+.admin-input:focus {
+  @apply ring-purple-300;
+}
+
+.admin-input.error {
+  @apply border-red-500 focus:ring-red-300 focus:border-red-400;
+}
+
+.admin-textarea {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-400 transition-all duration-300 resize-none bg-white;
+}
+
+.admin-select {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-400 transition-all duration-300 bg-white;
+}
+
+/* Button Styles */
+.admin-btn {
+  @apply px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl;
+}
+
+.admin-btn-primary {
+  @apply bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700;
+}
+
+.admin-btn-secondary {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+}
+
+.admin-btn-success {
+  @apply bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700;
+}
+
+.admin-btn-danger {
+  @apply bg-gradient-to-r from-red-600 to-pink-600 text-white hover:from-red-700 hover:to-pink-700;
+}
+
+.admin-btn-warning {
+  @apply bg-gradient-to-r from-orange-600 to-yellow-600 text-white hover:from-orange-700 hover:to-yellow-700;
+}
+
+.admin-btn:disabled {
+  @apply opacity-50 cursor-not-allowed transform-none;
+}
+
+/* Action Button Groups */
+.action-buttons {
+  @apply flex space-x-2;
+}
+
+.action-btn {
+  @apply p-2 rounded-lg transition-colors duration-200;
+}
+
+.action-btn-edit {
+  @apply bg-blue-100 text-blue-600 hover:bg-blue-200;
+}
+
+.action-btn-view {
+  @apply bg-green-100 text-green-600 hover:bg-green-200;
+}
+
+.action-btn-delete {
+  @apply bg-red-100 text-red-600 hover:bg-red-200;
+}
+
+/* Tag Styles */
+.admin-tag {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.admin-tag-blue {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.admin-tag-purple {
+  @apply bg-purple-100 text-purple-800;
+}
+
+.admin-tag-green {
+  @apply bg-green-100 text-green-800;
+}
+
+.admin-tag-orange {
+  @apply bg-orange-100 text-orange-800;
+}
+
+.admin-tag-red {
+  @apply bg-red-100 text-red-800;
+}
+
+.admin-tag-gray {
+  @apply bg-gray-100 text-gray-800;
+}
+
+/* Modal Styles */
+.admin-modal {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4;
+}
+
+.admin-modal-content {
+  @apply bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden;
+  animation: modal-enter 0.3s ease-out;
+}
+
+@keyframes modal-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.admin-modal-header {
+  @apply flex items-center justify-between p-6 border-b border-gray-200;
+}
+
+.admin-modal-title {
+  @apply text-2xl font-bold text-gray-800;
+}
+
+.admin-modal-close {
+  @apply p-2 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors duration-200;
+}
+
+.admin-modal-body {
+  @apply p-6 overflow-y-auto max-h-[60vh];
+}
+
+/* Loading States */
+.loading-skeleton {
+  @apply animate-pulse;
+}
+
+.loading-skeleton-line {
+  @apply h-4 bg-gray-200 rounded mb-2;
+}
+
+.loading-skeleton-circle {
+  @apply w-12 h-12 bg-gray-200 rounded-full;
+}
+
+.loading-skeleton-rect {
+  @apply w-full h-32 bg-gray-200 rounded-lg;
+}
+
+/* Alert Styles */
+.admin-alert {
+  @apply p-4 rounded-2xl border flex items-start space-x-3;
+}
+
+.admin-alert-success {
+  @apply bg-green-50 border-green-200;
+}
+
+.admin-alert-error {
+  @apply bg-red-50 border-red-200;
+}
+
+.admin-alert-warning {
+  @apply bg-orange-50 border-orange-200;
+}
+
+.admin-alert-info {
+  @apply bg-blue-50 border-blue-200;
+}
+
+.admin-alert-icon {
+  @apply w-5 h-5 flex-shrink-0;
+}
+
+.admin-alert-success .admin-alert-icon {
+  @apply text-green-600;
+}
+
+.admin-alert-error .admin-alert-icon {
+  @apply text-red-600;
+}
+
+.admin-alert-warning .admin-alert-icon {
+  @apply text-orange-600;
+}
+
+.admin-alert-info .admin-alert-icon {
+  @apply text-blue-600;
+}
+
+.admin-alert-content {
+  @apply flex-1;
+}
+
+.admin-alert-title {
+  @apply font-semibold mb-1;
+}
+
+.admin-alert-success .admin-alert-title {
+  @apply text-green-800;
+}
+
+.admin-alert-error .admin-alert-title {
+  @apply text-red-800;
+}
+
+.admin-alert-warning .admin-alert-title {
+  @apply text-orange-800;
+}
+
+.admin-alert-info .admin-alert-title {
+  @apply text-blue-800;
+}
+
+.admin-alert-message {
+  @apply text-sm;
+}
+
+.admin-alert-success .admin-alert-message {
+  @apply text-green-700;
+}
+
+.admin-alert-error .admin-alert-message {
+  @apply text-red-700;
+}
+
+.admin-alert-warning .admin-alert-message {
+  @apply text-orange-700;
+}
+
+.admin-alert-info .admin-alert-message {
+  @apply text-blue-700;
+}
+
+/* Empty State Styles */
+.admin-empty-state {
+  @apply text-center py-16;
+}
+
+.admin-empty-state-icon {
+  @apply w-24 h-24 mx-auto text-gray-400 mb-6;
+}
+
+.admin-empty-state-title {
+  @apply text-2xl font-semibold text-gray-800 mb-4;
+}
+
+.admin-empty-state-message {
+  @apply text-gray-600 mb-8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-card {
+    @apply mx-4;
+  }
+  
+  .admin-modal-content {
+    @apply mx-4;
+  }
+  
+  .stats-card {
+    @apply p-4;
+  }
+  
+  .stats-card-value {
+    @apply text-2xl;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .admin-sidebar,
+  .admin-topbar,
+  .admin-btn,
+  .action-buttons {
+    @apply hidden;
+  }
+  
+  .admin-card {
+    @apply shadow-none border border-gray-300;
+  }
+}
