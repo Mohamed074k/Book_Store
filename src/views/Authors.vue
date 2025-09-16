@@ -20,21 +20,51 @@
             Discover the brilliant minds behind your favorite stories
           </p>
           
-          <!-- Search -->
-          <div class="max-w-xl mx-auto animate-fade-in-up animation-delay-300">
+          <!-- Enhanced Search -->
+          <div class="max-w-2xl mx-auto animate-fade-in-up animation-delay-300">
             <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                <svg class="w-6 h-6 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </div>
               <input
                 v-model="searchQuery"
                 @input="handleSearch"
                 type="text"
                 placeholder="Search authors by name or bio..."
-                class="w-full px-6 py-4 rounded-2xl text-gray-800 placeholder-gray-300 shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300 transform focus:scale-105 bg-white/95 backdrop-blur-sm"
+                class="w-full pl-14 pr-14 py-4 rounded-2xl text-gray-800 placeholder-purple-300 shadow-xl focus:outline-none focus:ring-4 focus:ring-purple-300/50 transition-all duration-300 transform focus:scale-105 bg-white/95 backdrop-blur-sm border border-white/50 hover:border-white/70"
               />
-              <div class="absolute right-4 top-1/2 transform -translate-y-1/2">
-                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              <!-- Clear Search Button -->
+              <button
+                v-if="searchQuery"
+                @click="clearSearch"
+                class="absolute inset-y-0 right-0 pr-4 flex items-center text-purple-400 hover:text-purple-600 transition-colors duration-200"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
+              </button>
+            </div>
+
+            <!-- Search Summary -->
+            <div v-if="searchQuery" class="mt-4 animate-fade-in-up animation-delay-500">
+              <div class="glass-effect px-4 py-2 rounded-full text-white text-sm border border-white/30 inline-block">
+                <span class="opacity-80">Searching for:</span> 
+                <span class="font-medium">{{ searchQuery }}</span>
+                <button @click="clearSearch" class="ml-2 hover:text-red-300">
+                  <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
               </div>
+            </div>
+
+            <!-- Results Count -->
+            <div v-if="!authors.loading" class="mt-4 animate-fade-in-up animation-delay-600">
+              <p class="text-white/80 text-sm">
+                {{ filteredAuthors.length }} {{ filteredAuthors.length === 1 ? 'author' : 'authors' }} found
+              </p>
             </div>
           </div>
         </div>

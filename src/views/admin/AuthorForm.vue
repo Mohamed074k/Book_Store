@@ -67,27 +67,71 @@
                 <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
               </div>
 
-              <!-- Avatar URL -->
+              <!-- Avatar Image Upload with Drag and Drop -->
               <div class="animate-fade-in-up animation-delay-200">
-                <label for="avatarUrl" class="block text-sm font-semibold text-gray-700 mb-2">
-                  Avatar Image URL
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Author Avatar
                 </label>
-                <input
-                  id="avatarUrl"
-                  v-model="form.avatarUrl"
-                  type="url"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 focus:border-purple-400 transition-all duration-300"
-                  placeholder="https://example.com/author-photo.jpg"
-                />
-                <p class="text-xs text-gray-500 mt-1">Leave empty to use a default avatar</p>
                 
-                <!-- Image Preview -->
+                <!-- Drag and Drop Area -->
+                <div
+                  @dragover.prevent
+                  @dragenter.prevent="isDragging = true"
+                  @dragleave.prevent="isDragging = false"
+                  @drop.prevent="handleDrop"
+                  @click="triggerFileInput"
+                  class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-purple-400 hover:bg-purple-50 transition-all duration-300 cursor-pointer"
+                  :class="{ 'border-purple-400 bg-purple-50': isDragging }"
+                >
+                  <input
+                    ref="fileInput"
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    @change="handleFileSelect"
+                  />
+                  
+                  <div v-if="!form.avatarUrl && !uploadedImageUrl">
+                    <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <p class="text-gray-600 mb-2">Drag and drop an avatar image here, or click to select</p>
+                    <p class="text-xs text-gray-500">Supports PNG, JPG, JPEG files up to 5MB</p>
+                  </div>
+                  
+                  <!-- Image Preview -->
+                  <div v-else class="relative inline-block">
+                    <img
+                      :src="uploadedImageUrl || form.avatarUrl"
+                      alt="Author avatar preview"
+                      class="w-32 h-32 object-cover rounded-full shadow-lg border-4 border-purple-100 mx-auto"
+                      @error="handleImageError"
+                    />
+                    <button
+                      type="button"
+                      @click.stop="removeImage"
+                      class="absolute -top-2 -right-2 w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-200 flex items-center justify-center shadow-lg"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
+                    <p class="text-xs text-gray-500 mt-3">Click to change avatar</p>
+                  </div>
+                </div>
+
+                <!-- URL Input (Alternative) -->
                 <div class="mt-4">
-                  <img
-                    :src="form.avatarUrl || placeholderImage"
-                    alt="Author avatar preview"
-                    class="w-24 h-24 object-cover rounded-full border-4 border-purple-100 shadow-lg"
-                    @error="handleImageError"
+                  <label for="avatarUrl" class="block text-xs font-medium text-gray-600 mb-1">
+                    Or enter avatar image URL:
+                  </label>
+                  <input
+                    id="avatarUrl"
+                    v-model="form.avatarUrl"
+                    type="url"
+                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-400 transition-all duration-300"
+                    placeholder="https://example.com/avatar.jpg"
+                    @input="uploadedImageUrl = ''"
                   />
                 </div>
               </div>
@@ -239,7 +283,7 @@ const props = defineProps({
 })
 
 const isEditing = computed(() => !!props.id)
-const placeholderImage = 'https://via.placeholder.com/96x96/e5e7eb/9ca3af?text=Author'
+const placeholderImage = 'https://via.placeholder.com/128x128/e5e7eb/9ca3af?text=Author'
 
 const form = ref({
   name: '',
@@ -248,6 +292,9 @@ const form = ref({
 })
 
 const errors = ref({})
+const isDragging = ref(false)
+const uploadedImageUrl = ref('')
+const fileInput = ref(null)
 
 const author = computed(() => authors.selected)
 
@@ -297,6 +344,57 @@ const handleImageError = (event) => {
 const handleBookImageError = (event) => {
   event.target.src = 'https://via.placeholder.com/40x48/e5e7eb/9ca3af?text=Book'
 }
+
+// Image upload functions
+const triggerFileInput = () => {
+  fileInput.value.click()
+}
+
+const handleFileSelect = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    processImageFile(file)
+  }
+}
+
+const handleDrop = (event) => {
+  isDragging.value = false
+  const files = event.dataTransfer.files
+  if (files.length > 0) {
+    processImageFile(files[0])
+  }
+}
+
+const processImageFile = (file) => {
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    alert('Please select a valid image file (PNG, JPG, JPEG)')
+    return
+  }
+
+  // Validate file size (5MB limit)
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File size must be less than 5MB')
+    return
+  }
+
+  // Create a local URL for preview
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    uploadedImageUrl.value = e.target.result
+    form.value.avatarUrl = '' // Clear URL input when file is uploaded
+  }
+  reader.readAsDataURL(file)
+}
+
+const removeImage = () => {
+  uploadedImageUrl.value = ''
+  form.value.avatarUrl = ''
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
+}
+
 const loadAuthorData = async () => {
   if (isEditing.value) {
     const authorId = normalizeId(props.id) // Use normalizeId here
@@ -331,7 +429,7 @@ const handleSubmit = async () => {
   const authorData = {
     name: form.value.name.trim(),
     bio: form.value.bio.trim(),
-    avatarUrl: form.value.avatarUrl.trim() || placeholderImage
+    avatarUrl: uploadedImageUrl.value || form.value.avatarUrl.trim() || placeholderImage
   }
 
   try {
@@ -346,7 +444,6 @@ const handleSubmit = async () => {
     console.error('Error saving author:', error)
   }
 }
-
 
 const loadData = async () => {
   await Promise.all([

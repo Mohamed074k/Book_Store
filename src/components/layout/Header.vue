@@ -4,7 +4,7 @@
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
       <!-- Logo -->
       <h1 class="text-2xl font-extrabold text-gradient-primary tracking-tight animate-fade-in">
-        📚 Bookshelf
+        📚 NovelHub
       </h1>
 
       <!-- Desktop Nav -->

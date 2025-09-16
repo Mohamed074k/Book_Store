@@ -18,56 +18,99 @@
           <p class="text-xl opacity-90 mb-8 animate-fade-in-up animation-delay-200">
             Explore our curated collection of amazing books from talented authors
           </p>
-
-          <!-- Search & Filter -->
-          <div class="max-w-2xl mx-auto">
-            <!-- Search -->
-            <div class="relative mb-4 animate-fade-in-up animation-delay-300">
-              <input
-                v-model="searchQuery"
-                @input="handleSearch"
-                type="text"
-                placeholder="Search books by title..."
-                class="w-full px-6 py-4 rounded-2xl text-gray-800 placeholder-gray-300 shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300 transform focus:scale-105 bg-white/95 backdrop-blur-sm"
-              />
-              <div class="absolute right-4 top-1/2 transform -translate-y-1/2">
-                <svg
-                  class="w-6 h-6 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+</div>
+</div>
+ <!-- Enhanced Search & Filter -->
+          <div class="max-w-2xl mx-4 md:mx-auto">
+            <div class="grid md:grid-cols-1 gap-6">
+              <!-- Search Input -->
+              <div class="relative animate-fade-in-up animation-delay-300">
+                <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                  <svg class="w-6 h-6 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </div>
+                <input
+                  v-model="searchQuery"
+                  @input="handleSearch"
+                  type="text"
+                  placeholder="Search books by title..."
+                  class="w-full pl-14 pr-6 py-4 rounded-2xl text-gray-800 placeholder-purple-300 shadow-xl focus:outline-none focus:ring-4 focus:ring-purple-300/50 transition-all duration-300 transform focus:scale-105 bg-white/95 backdrop-blur-sm border border-white/50 hover:border-white/70"
+                />
+                <!-- Clear Search Button -->
+                <button
+                  v-if="searchQuery"
+                  @click="searchQuery = ''; handleSearch()"
+                  class="absolute inset-y-0 right-0 pr-4 flex items-center text-purple-400 hover:text-purple-600 transition-colors duration-200"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Author Filter Dropdown -->
+              <div class="relative animate-fade-in-up animation-delay-400">
+                <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                  <svg class="w-6 h-6 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                </div>
+                <select
+                  v-model="selectedAuthorId"
+                  @change="handleSearch"
+                  class="w-full pl-14 pr-12 py-4 rounded-2xl text-gray-800 bg-white/95 backdrop-blur-sm shadow-xl focus:outline-none focus:ring-4 focus:ring-purple-300/50 transition-all duration-300 border border-white/50 hover:border-white/70 appearance-none cursor-pointer"
+                >
+                  <option value="" class="text-gray-600">All Authors</option>
+                  <option
+                    v-for="author in authors.list"
+                    :key="author.id"
+                    :value="author.id"
+                    class="text-gray-800"
+                  >
+                    {{ author.name }}
+                  </option>
+                </select>
+                <!-- Dropdown Arrow -->
+                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </div>
               </div>
             </div>
 
-            <!-- Author Filter -->
-            <div class="animate-fade-in-up animation-delay-400">
-              <select
-                v-model="selectedAuthorId"
-                @change="handleSearch"
-                class="w-full px-6 py-3 rounded-xl text-gray-800 bg-white/90 backdrop-blur-sm shadow-lg focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300"
-              >
-                <option value="">All Authors</option>
-                <option
-                  v-for="author in authors.list"
-                  :key="author.id"
-                  :value="author.id"
-                >
-                  {{ author.name }}
-                </option>
-              </select>
+            <!-- Filter Summary -->
+            <div v-if="searchQuery || selectedAuthorId" class="mt-4 animate-fade-in-up animation-delay-500">
+              <div class="flex flex-wrap justify-center gap-3">
+                <div v-if="searchQuery" class="glass-effect px-4 py-2 rounded-full text-white text-sm border border-white/30">
+                  <span class="opacity-80">Search:</span> <span class="font-medium">{{ searchQuery }}</span>
+                  <button @click="searchQuery = ''; handleSearch()" class="ml-2 hover:text-red-300">
+                    <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+                <div v-if="selectedAuthorId" class="glass-effect px-4 py-2 rounded-full text-white text-sm border border-white/30">
+                  <span class="opacity-80">Author:</span> <span class="font-medium">{{ getAuthorName(selectedAuthorId) }}</span>
+                  <button @click="selectedAuthorId = ''; handleSearch()" class="ml-2 hover:text-red-300">
+                    <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Results Count -->
+            <div v-if="!books.loading" class="text-center mt-4 animate-fade-in-up animation-delay-600">
+              <p class="text-white/80 text-sm">
+                {{ filteredBooks.length }} {{ filteredBooks.length === 1 ? 'book' : 'books' }} found
+              </p>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
+   
+              </section>
 
     <!-- Books Grid -->
     <section class="py-16">
