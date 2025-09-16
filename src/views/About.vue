@@ -141,6 +141,7 @@
           >
             Browse Books
           </router-link>
+          npx json-server --watch db.json --port 5000
           <router-link
             to="/authors"
             class="btn-accent bg-transparent border-2 border-white text-white px-8 py-4 rounded-2xl font-semibold hover:bg-white hover:text-purple-600 transition-all duration-300 glass-effect"
