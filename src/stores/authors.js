@@ -1,7 +1,8 @@
 // src/stores/authors.js
 import { defineStore } from 'pinia'
-import { api } from '@/services/api' // ← Use your existing API client
+import { authorsAPI } from '@/services/api' // ← FIXED: Use authorsAPI instead of raw api
 import { useBooksStore } from './books'
+import { normalizeId, ensureNumericId } from '@/utils/idHelpers' 
 
 export const useAuthorsStore = defineStore('authors', {
   state: () => ({
@@ -62,28 +63,23 @@ export const useAuthorsStore = defineStore('authors', {
     },
   },
 
-  actions: {
+   actions: {
     async fetchList() {
       this.loading = true
       this.error = null
 
       try {
         console.log('👤 Fetching authors list...')
-        const response = await api.get('/authors')
-        const data = response.data
+        const data = await authorsAPI.getAll()
 
-        // Normalize IDs to numbers
-        this.list = Array.isArray(data) ? data.map(author => ({
-          ...author,
-          id: typeof author.id === 'string' ? parseInt(author.id) : author.id
-        })) : []
+        // Use the helper function to normalize IDs
+        this.list = ensureNumericId(data) || []
         
         this.lastFetchedAt = new Date()
-
         console.log(`✅ Successfully loaded ${this.list.length} authors`)
       } catch (err) {
         console.error('❌ Error fetching authors:', err)
-        this.error = err.response?.data?.message || 'Failed to fetch authors'
+        this.error = err.message || 'Failed to fetch authors'
         this.list = []
       } finally {
         this.loading = false
@@ -96,23 +92,18 @@ export const useAuthorsStore = defineStore('authors', {
 
       try {
         console.log(`📖 Fetching author with ID: ${id}`)
-        const response = await api.get(`/authors/${id}`)
-        const data = response.data
+        const data = await authorsAPI.getById(id)
 
-        // Normalize ID to number
-        const normalizedData = {
-          ...data,
-          id: typeof data.id === 'string' ? parseInt(data.id) : data.id
-        }
+        // Use the helper function to normalize IDs
+        const normalizedData = ensureNumericId(data)
 
         this.selected = normalizedData
 
         // Add/update in list if not present
-        const existingIndex = this.list.findIndex((a) => {
-          const authorId = typeof a.id === 'string' ? parseInt(a.id) : a.id
-          const dataId = typeof normalizedData.id === 'string' ? parseInt(normalizedData.id) : normalizedData.id
-          return authorId === dataId
-        })
+        const normalizedId = normalizeId(normalizedData.id)
+        const existingIndex = this.list.findIndex(author => 
+          normalizeId(author.id) === normalizedId
+        )
         
         if (existingIndex === -1) {
           this.list.push(normalizedData)
@@ -123,12 +114,13 @@ export const useAuthorsStore = defineStore('authors', {
         console.log(`✅ Successfully loaded author: ${normalizedData.name}`)
       } catch (err) {
         console.error('❌ Error fetching author:', err)
-        this.error = err.response?.data?.message || 'Author not found'
+        this.error = err.message || 'Author not found'
         this.selected = null
       } finally {
         this.loading = false
       }
     },
+
 
     async create(authorData) {
       this.loading = true
@@ -160,8 +152,7 @@ export const useAuthorsStore = defineStore('authors', {
           throw new Error(`An author named "${existingAuthor.name}" already exists`)
         }
 
-        const response = await api.post('/authors', authorData)
-        const data = response.data
+        const data = await authorsAPI.create(authorData) // ← FIXED: Use authorsAPI
 
         // Normalize ID to number
         const normalizedData = {
@@ -218,8 +209,7 @@ export const useAuthorsStore = defineStore('authors', {
           throw new Error(`An author named "${existingAuthor.name}" already exists`)
         }
 
-        const response = await api.put(`/authors/${id}`, authorData)
-        const data = response.data
+        const data = await authorsAPI.update(id, authorData) // ← FIXED: Use authorsAPI
 
         // Normalize ID to number
         const normalizedData = {
@@ -255,7 +245,7 @@ export const useAuthorsStore = defineStore('authors', {
       try {
         console.log(`🗑️ Deleting author ID: ${id}`)
 
-        await api.delete(`/authors/${id}`)
+        await authorsAPI.delete(id) // ← FIXED: Use authorsAPI
 
         const searchId = typeof id === 'string' ? parseInt(id) : id
         
@@ -274,7 +264,7 @@ export const useAuthorsStore = defineStore('authors', {
         console.log(`✅ Successfully deleted author`)
       } catch (err) {
         console.error('❌ Error deleting author:', err)
-        this.error = err.response?.data?.message || 'Failed to delete author'
+        this.error = err.message || 'Failed to delete author'
         throw err
       } finally {
         this.loading = false
