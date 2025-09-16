@@ -138,10 +138,30 @@ export const useAuthorsStore = defineStore('authors', {
           throw new Error(`An author named "${existingAuthor.name}" already exists`)
         }
 
-        const response = await api.post('/authors', authorData)
-        const data = response.data
+        // Prepare data with timestamps
+        const currentTimestamp = new Date().toISOString()
+        const authorPayload = {
+          ...authorData,
+          createdAt: currentTimestamp,
+          updatedAt: currentTimestamp,
+          // Ensure we have a default avatar if none provided
+          avatarUrl: authorData.avatarUrl || 'https://via.placeholder.com/96x96/e5e7eb/9ca3af?text=Author'
+        }
 
-        this.list.push(data)
+        const response = await api.post('/authors', authorPayload)
+        let data = response.data
+
+        // Ensure the response has timestamps (fallback if API doesn't return them)
+        if (!data.createdAt) {
+          data = {
+            ...data,
+            createdAt: currentTimestamp,
+            updatedAt: currentTimestamp
+          }
+        }
+
+        // Add to the beginning of the list (newest first)
+        this.list.unshift(data)
         this.selected = data
 
         console.log(`✅ Successfully created author: ${data.name}`)
@@ -186,8 +206,22 @@ export const useAuthorsStore = defineStore('authors', {
           throw new Error(`An author named "${existingAuthor.name}" already exists`)
         }
 
-        const response = await api.put(`/authors/${id}`, authorData)
-        const data = response.data
+        // Add updated timestamp
+        const authorPayload = {
+          ...authorData,
+          updatedAt: new Date().toISOString()
+        }
+
+        const response = await api.put(`/authors/${id}`, authorPayload)
+        let data = response.data
+
+        // Ensure the response has updatedAt (fallback if API doesn't return it)
+        if (!data.updatedAt) {
+          data = {
+            ...data,
+            updatedAt: new Date().toISOString()
+          }
+        }
 
         const index = this.list.findIndex((a) => a.id === parseInt(id))
         if (index !== -1) {
@@ -228,6 +262,12 @@ export const useAuthorsStore = defineStore('authors', {
       } finally {
         this.loading = false
       }
+    },
+
+    // Refresh authors list (useful after creating/updating)
+    async refresh() {
+      console.log('🔄 Refreshing authors list...')
+      await this.fetchList()
     },
 
     // Clear any active error

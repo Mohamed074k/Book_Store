@@ -145,27 +145,69 @@
 
             <!-- Right Column -->
             <div class="space-y-6">
-              <!-- Cover URL -->
+              <!-- Cover Image Upload -->
               <div class="animate-fade-in-up animation-delay-500">
-                <label for="coverUrl" class="block text-sm font-semibold text-gray-700 mb-2">
-                  Cover Image URL
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  Cover Image
                 </label>
-                <input
-                  id="coverUrl"
-                  v-model="form.coverUrl"
-                  type="url"
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-300 focus:border-blue-400 transition-all duration-300"
-                  placeholder="https://example.com/book-cover.jpg"
-                />
-                <p class="text-xs text-gray-500 mt-1">Leave empty to use a placeholder image</p>
                 
-                <!-- Image Preview -->
-                <div v-if="form.coverUrl" class="mt-4">
-                  <img
-                    :src="form.coverUrl || placeholderImage"
-                    alt="Book cover preview"
-                    class="w-32 h-40 object-cover rounded-lg shadow-md border"
-                    @error="handleImageError"
+                <!-- Drag and Drop Area -->
+                <div
+                  @dragover.prevent
+                  @dragenter.prevent
+                  @drop.prevent="handleDrop"
+                  @click="triggerFileInput"
+                  class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 cursor-pointer"
+                  :class="{ 'border-blue-400 bg-blue-50': isDragging }"
+                >
+                  <input
+                    ref="fileInput"
+                    type="file"
+                    accept="image/*"
+                    class="hidden"
+                    @change="handleFileSelect"
+                  />
+                  
+                  <div v-if="!form.coverUrl && !uploadedImageUrl">
+                    <svg class="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6M7 7l10 10M7 17L17 7"></path>
+                    </svg>
+                    <p class="text-gray-600 mb-2">Drag and drop an image here, or click to select</p>
+                    <p class="text-xs text-gray-500">Supports PNG, JPG, JPEG files up to 5MB</p>
+                  </div>
+                  
+                  <!-- Image Preview -->
+                  <div v-else class="relative">
+                    <img
+                      :src="uploadedImageUrl || form.coverUrl"
+                      alt="Book cover preview"
+                      class="w-32 h-40 object-cover rounded-lg shadow-md border mx-auto"
+                    />
+                    <button
+                      type="button"
+                      @click.stop="removeImage"
+                      class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors duration-200 flex items-center justify-center"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
+                    <p class="text-xs text-gray-500 mt-2">Click to change image</p>
+                  </div>
+                </div>
+
+                <!-- URL Input (Alternative) -->
+                <div class="mt-4">
+                  <label for="coverUrl" class="block text-xs font-medium text-gray-600 mb-1">
+                    Or enter image URL:
+                  </label>
+                  <input
+                    id="coverUrl"
+                    v-model="form.coverUrl"
+                    type="url"
+                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 transition-all duration-300"
+                    placeholder="https://example.com/book-cover.jpg"
+                    @input="uploadedImageUrl = ''"
                   />
                 </div>
               </div>
@@ -194,7 +236,7 @@
           <div class="flex flex-col sm:flex-row gap-4 mt-8 pt-8 border-t border-gray-200 animate-fade-in-up animation-delay-700">
             <button
               type="submit"
-              :disabled="books.loading"
+              :disabled="books.loading || !isFormValid"
               class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-8 py-4 rounded-2xl font-semibold hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               <span v-if="books.loading" class="flex items-center justify-center">
@@ -256,6 +298,17 @@ const form = ref({
 
 const tagInput = ref('')
 const errors = ref({})
+const isDragging = ref(false)
+const uploadedImageUrl = ref('')
+const fileInput = ref(null)
+
+const isFormValid = computed(() => {
+  return form.value.title.trim() && 
+         form.value.authorId && 
+         form.value.year &&
+         form.value.description.trim() &&
+         authors.list.length > 0 // Ensure authors are loaded
+})
 
 const validateForm = () => {
   errors.value = {}
@@ -266,6 +319,12 @@ const validateForm = () => {
   
   if (!form.value.authorId) {
     errors.value.authorId = 'Please select an author'
+  } else {
+    // Check if the selected author actually exists in the loaded authors list
+    const selectedAuthor = authors.authorById(form.value.authorId)
+    if (!selectedAuthor) {
+      errors.value.authorId = 'Selected author is invalid. Please refresh and try again.'
+    }
   }
   
   if (!form.value.year || form.value.year < 1000 || form.value.year > currentYear) {
@@ -278,9 +337,11 @@ const validateForm = () => {
     errors.value.description = 'Description must be less than 500 characters'
   }
 
-  // Check for duplicate title by same author
-  if (books.duplicateTitleExists(form.value.title, form.value.authorId, isEditing.value ? parseInt(props.id) : null)) {
-    errors.value.title = 'This author already has a book with this title'
+  // Check for duplicate title by same author (only if author is valid)
+  if (form.value.authorId && authors.authorById(form.value.authorId)) {
+    if (books.duplicateTitleExists(form.value.title, form.value.authorId, isEditing.value ? parseInt(props.id) : null)) {
+      errors.value.title = 'This author already has a book with this title'
+    }
   }
   
   return Object.keys(errors.value).length === 0
@@ -298,8 +359,53 @@ const removeTag = (index) => {
   form.value.tags.splice(index, 1)
 }
 
-const handleImageError = (event) => {
-  event.target.src = placeholderImage
+const triggerFileInput = () => {
+  fileInput.value.click()
+}
+
+const handleFileSelect = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    processImageFile(file)
+  }
+}
+
+const handleDrop = (event) => {
+  isDragging.value = false
+  const files = event.dataTransfer.files
+  if (files.length > 0) {
+    processImageFile(files[0])
+  }
+}
+
+const processImageFile = (file) => {
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    alert('Please select a valid image file (PNG, JPG, JPEG)')
+    return
+  }
+
+  // Validate file size (5MB limit)
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File size must be less than 5MB')
+    return
+  }
+
+  // Create a local URL for preview
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    uploadedImageUrl.value = e.target.result
+    form.value.coverUrl = '' // Clear URL input when file is uploaded
+  }
+  reader.readAsDataURL(file)
+}
+
+const removeImage = () => {
+  uploadedImageUrl.value = ''
+  form.value.coverUrl = ''
+  if (fileInput.value) {
+    fileInput.value.value = ''
+  }
 }
 
 const loadBookData = async () => {
@@ -312,8 +418,8 @@ const loadBookData = async () => {
         title: book.title,
         authorId: book.authorId,
         year: book.year,
-        tags: [...book.tags],
-        coverUrl: book.coverUrl,
+        tags: [...(book.tags || [])],
+        coverUrl: book.coverUrl || '',
         description: book.description
       }
     } else {
@@ -324,8 +430,8 @@ const loadBookData = async () => {
           title: books.selected.title,
           authorId: books.selected.authorId,
           year: books.selected.year,
-          tags: [...books.selected.tags],
-          coverUrl: books.selected.coverUrl,
+          tags: [...(books.selected.tags || [])],
+          coverUrl: books.selected.coverUrl || '',
           description: books.selected.description
         }
       }
@@ -338,12 +444,19 @@ const handleSubmit = async () => {
     return
   }
 
+  // Double-check that the author exists before submission
+  const selectedAuthor = authors.authorById(form.value.authorId)
+  if (!selectedAuthor) {
+    errors.value.authorId = 'Selected author does not exist. Please refresh the page and try again.'
+    return
+  }
+
   const bookData = {
     title: form.value.title.trim(),
-    authorId: form.value.authorId,
+    authorId: parseInt(form.value.authorId), // Ensure it's a number
     year: form.value.year,
     tags: form.value.tags,
-    coverUrl: form.value.coverUrl.trim() || placeholderImage,
+    coverUrl: uploadedImageUrl.value || form.value.coverUrl.trim() || placeholderImage,
     description: form.value.description.trim()
   }
 
@@ -361,10 +474,9 @@ const handleSubmit = async () => {
 }
 
 const loadData = async () => {
-  await Promise.all([
-    books.fetchList(),
-    authors.fetchList()
-  ])
+  // Load authors first, then books
+  await authors.fetchList()
+  await books.fetchList()
   
   if (isEditing.value) {
     await loadBookData()
