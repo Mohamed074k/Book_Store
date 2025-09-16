@@ -232,7 +232,7 @@
       </header>
 
       <!-- Page Content -->
-      <main class="">
+      <main class="min-h-screen">
         <router-view />
       </main>
     </div>
