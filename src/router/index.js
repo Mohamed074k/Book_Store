@@ -1,5 +1,4 @@
-// src/router/index.js
-import { createRouter, createWebHistory } from 'vue-router'
+ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 // Public Layout
@@ -36,7 +35,7 @@ const routes = [
         name: 'Home',
         component: Home,
         meta: {
-          title: 'Home - Library Management'
+          title: 'Home - NovelHub'
         }
       },
       {
@@ -44,7 +43,7 @@ const routes = [
         name: 'About',
         component: About,
         meta: {
-          title: 'About - Library Management'
+          title: 'About - NovelHub'
         }
       },
       {
@@ -52,7 +51,7 @@ const routes = [
         name: 'Books',
         component: Books,
         meta: {
-          title: 'Books - Library Management'
+          title: 'Books - NovelHub'
         }
       },
       {
@@ -61,7 +60,7 @@ const routes = [
         component: BookDetail,
         props: true,
         meta: {
-          title: 'Book Details - Library Management'
+          title: 'Book Details - NovelHub'
         }
       },
       {
@@ -69,7 +68,7 @@ const routes = [
         name: 'Authors',
         component: Authors,
         meta: {
-          title: 'Authors - Library Management'
+          title: 'Authors - NovelHub'
         }
       },
       {
@@ -78,19 +77,19 @@ const routes = [
         component: AuthorDetail,
         props: true,
         meta: {
-          title: 'Author Profile - Library Management'
+          title: 'Author Profile - NovelHub'
         }
       }
     ]
   },
 
-  // Admin login (standalone, no layout)
+  // Admin login
   {
     path: '/admin/login',
     name: 'AdminLogin',
     component: AdminLogin,
     meta: {
-      title: 'Admin Login - Library Management',
+      title: 'Admin Login - NovelHub',
       public: true,
       hideForAuth: true // Hide if already authenticated
     }
@@ -178,13 +177,13 @@ const routes = [
     ]
   },
 
-  // Catch all route - 404
+  // Catch all route
   {
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: () => import('@/views/NotFound.vue'),
     meta: {
-      title: 'Page Not Found - Library Management'
+      title: 'Page Not Found - NovelHub'
     }
   }
 ]

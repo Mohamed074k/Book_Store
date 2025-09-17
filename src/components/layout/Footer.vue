@@ -1,5 +1,4 @@
-<!-- src/components/layout/Footer.vue -->
-<template>
+ <template>
   <footer class="bg-gradient-hero text-white py-12 mt-auto relative overflow-hidden">
     <!-- Background Pattern -->
     <div class="absolute inset-0 opacity-10">
@@ -88,7 +87,7 @@
       <!-- Bottom Bar -->
       <div class="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center animate-fade-in-up">
         <div class="text-white/80 mb-4 md:mb-0">
-          © {{ currentYear }} NovelHub. Made by <a href="#" class="hover:text-white transition-colors duration-300">Mohamed Elsayed</a>.
+          © {{ currentYear }} NovelHub. Made by <a href="http://www.linkedin.com/in/mohamed-elsayed-2623602a1" class="hover:text-white transition-colors duration-300 underline">Mohamed Elsayed</a>.
         </div>
         <div class="flex space-x-6 text-sm text-white/80">
           <a href="#" class="hover:text-white transition-colors duration-300">Privacy Policy</a>

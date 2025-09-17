@@ -1,5 +1,4 @@
-// src/stores/books.js
-import { defineStore } from 'pinia'
+ import { defineStore } from 'pinia'
 import { booksAPI } from '@/services/api'
 import { normalizeId, ensureNumericId } from '@/utils/idHelpers'
 
@@ -85,16 +84,15 @@ export const useBooksStore = defineStore('books', {
       this.error = null
       
       try {
-        console.log('📚 Fetching books list...')
+        console.log(' Fetching books list...')
         const data = await booksAPI.getAll()
         
-        // Use the helper function to normalize IDs
-        this.list = ensureNumericId(data) || []
+         this.list = ensureNumericId(data) || []
         
         this.lastFetchedAt = new Date()
-        console.log(`✅ Successfully loaded ${this.list.length} books`)
+        console.log(` Successfully loaded ${this.list.length} books`)
       } catch (err) {
-        console.error('❌ Error fetching books:', err)
+        console.error(' Error fetching books:', err)
         this.error = err.message || 'Failed to fetch books'
         this.list = []
       } finally {
@@ -107,16 +105,14 @@ export const useBooksStore = defineStore('books', {
       this.error = null
       
       try {
-        console.log(`📖 Fetching book with ID: ${id}`)
+        console.log(`Fetching book with ID: ${id}`)
         const data = await booksAPI.getById(id)
         
-        // Use the helper function to normalize IDs
-        const normalizedData = ensureNumericId(data)
+         const normalizedData = ensureNumericId(data)
         
         this.selected = normalizedData
         
-        // Also add to list if not already there
-        const normalizedId = normalizeId(normalizedData.id)
+         const normalizedId = normalizeId(normalizedData.id)
         const existingIndex = this.list.findIndex(book => 
           normalizeId(book.id) === normalizedId
         )
@@ -127,9 +123,9 @@ export const useBooksStore = defineStore('books', {
           this.list[existingIndex] = normalizedData
         }
         
-        console.log(`✅ Successfully loaded book: ${normalizedData.title}`)
+        console.log(`Successfully loaded book: ${normalizedData.title}`)
       } catch (err) {
-        console.error('❌ Error fetching book:', err)
+        console.error('Error fetching book:', err)
         this.error = err.message || 'Book not found'
         this.selected = null
       } finally {
@@ -142,9 +138,9 @@ export const useBooksStore = defineStore('books', {
       this.error = null
       
       try {
-        console.log('📝 Creating new book:', bookData.title)
+        console.log('Creating new book:', bookData.title)
         
-        // Basic validation
+        //  validation
         if (!bookData.title || !bookData.title.trim()) {
           throw new Error('Book title is required')
         }
@@ -159,8 +155,7 @@ export const useBooksStore = defineStore('books', {
 
         const data = await booksAPI.create(bookData)
         
-        // Normalize IDs to numbers
-        const normalizedData = {
+         const normalizedData = {
           ...data,
           id: typeof data.id === 'string' ? parseInt(data.id) : data.id,
           authorId: typeof data.authorId === 'string' ? parseInt(data.authorId) : data.authorId
@@ -169,10 +164,10 @@ export const useBooksStore = defineStore('books', {
         this.list.push(normalizedData)
         this.selected = normalizedData
         
-        console.log(`✅ Successfully created book: ${normalizedData.title}`)
+        console.log(`Successfully created book: ${normalizedData.title}`)
         return normalizedData
       } catch (err) {
-        console.error('❌ Error creating book:', err)
+        console.error('Error creating book:', err)
         this.error = err.message || 'Failed to create book'
         throw err
       } finally {
@@ -185,7 +180,7 @@ export const useBooksStore = defineStore('books', {
       this.error = null
       
       try {
-        console.log(`📝 Updating book ID: ${id}`)
+        console.log(`Updating book ID: ${id}`)
         
         // Basic validation
         if (!bookData.title || !bookData.title.trim()) {
@@ -220,10 +215,10 @@ export const useBooksStore = defineStore('books', {
         }
         this.selected = normalizedData
         
-        console.log(`✅ Successfully updated book: ${normalizedData.title}`)
+        console.log(`Successfully updated book: ${normalizedData.title}`)
         return normalizedData
       } catch (err) {
-        console.error('❌ Error updating book:', err)
+        console.error('Error updating book:', err)
         this.error = err.message || 'Failed to update book'
         throw err
       } finally {
@@ -236,7 +231,7 @@ export const useBooksStore = defineStore('books', {
       this.error = null
       
       try {
-        console.log(`🗑️ Deleting book ID: ${id}`)
+        console.log(`Deleting book ID: ${id}`)
         
         await booksAPI.delete(id)
         
@@ -254,9 +249,9 @@ export const useBooksStore = defineStore('books', {
           }
         }
         
-        console.log(`✅ Successfully deleted book`)
+        console.log(` Successfully deleted book`)
       } catch (err) {
-        console.error('❌ Error deleting book:', err)
+        console.error('Error deleting book:', err)
         this.error = err.message || 'Failed to delete book'
         throw err
       } finally {

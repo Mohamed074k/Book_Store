@@ -1,5 +1,4 @@
-<!-- src/views/admin/AuthorForm.vue -->
-<template>
+ <template>
   <div class="p-8 bg-gray-50 min-h-screen">
     <!-- Header -->
     <div class="mb-8 animate-fade-in">
@@ -378,11 +377,10 @@ const processImageFile = (file) => {
     return
   }
 
-  // Create a local URL for preview
-  const reader = new FileReader()
+   const reader = new FileReader()
   reader.onload = (e) => {
     uploadedImageUrl.value = e.target.result
-    form.value.avatarUrl = '' // Clear URL input when file is uploaded
+    form.value.avatarUrl = ''
   }
   reader.readAsDataURL(file)
 }
@@ -397,7 +395,7 @@ const removeImage = () => {
 
 const loadAuthorData = async () => {
   if (isEditing.value) {
-    const authorId = normalizeId(props.id) // Use normalizeId here
+    const authorId = normalizeId(props.id)
     const existingAuthor = authors.authorById(authorId)
     
     if (existingAuthor) {
@@ -434,7 +432,7 @@ const handleSubmit = async () => {
 
   try {
     if (isEditing.value) {
-      await authors.update(normalizeId(props.id), authorData) // Use normalizeId here
+      await authors.update(normalizeId(props.id), authorData) 
     } else {
       await authors.create(authorData)
     }

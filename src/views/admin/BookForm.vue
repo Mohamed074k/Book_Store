@@ -1,5 +1,4 @@
-<!-- src/views/admin/BookForm.vue -->
-<template>
+ <template>
   <div class="p-8 bg-gray-50 min-h-screen">
     <!-- Header -->
     <div class="mb-8 animate-fade-in">
@@ -307,7 +306,7 @@ const isFormValid = computed(() => {
          form.value.authorId && 
          form.value.year &&
          form.value.description.trim() &&
-         authors.list.length > 0 // Ensure authors are loaded
+         authors.list.length > 0 
 })
 
 const validateForm = () => {
@@ -320,9 +319,7 @@ const validateForm = () => {
   if (!form.value.authorId) {
     errors.value.authorId = 'Please select an author'
   } else {
-    // Check if the selected author actually exists in the loaded authors list
-    // Handle both string and number IDs
-    const selectedAuthorId = typeof form.value.authorId === 'string' ? parseInt(form.value.authorId) : form.value.authorId
+     const selectedAuthorId = typeof form.value.authorId === 'string' ? parseInt(form.value.authorId) : form.value.authorId
     const selectedAuthor = authors.list.find(author => {
       const authorId = typeof author.id === 'string' ? parseInt(author.id) : author.id
       return authorId === selectedAuthorId
@@ -343,8 +340,7 @@ const validateForm = () => {
     errors.value.description = 'Description must be less than 500 characters'
   }
 
-  // Check for duplicate title by same author (only if author is valid)
-  if (form.value.authorId) {
+   if (form.value.authorId) {
     const selectedAuthorId = typeof form.value.authorId === 'string' ? parseInt(form.value.authorId) : form.value.authorId
     const selectedAuthor = authors.list.find(author => {
       const authorId = typeof author.id === 'string' ? parseInt(author.id) : author.id
@@ -407,7 +403,7 @@ const processImageFile = (file) => {
   const reader = new FileReader()
   reader.onload = (e) => {
     uploadedImageUrl.value = e.target.result
-    form.value.coverUrl = '' // Clear URL input when file is uploaded
+    form.value.coverUrl = '' 
   }
   reader.readAsDataURL(file)
 }
@@ -456,8 +452,7 @@ const handleSubmit = async () => {
     return
   }
 
-  // Double-check that the author exists before submission
-  const selectedAuthorId = typeof form.value.authorId === 'string' ? parseInt(form.value.authorId) : form.value.authorId
+   const selectedAuthorId = typeof form.value.authorId === 'string' ? parseInt(form.value.authorId) : form.value.authorId
   const selectedAuthor = authors.list.find(author => {
     const authorId = typeof author.id === 'string' ? parseInt(author.id) : author.id
     return authorId === selectedAuthorId
@@ -470,7 +465,7 @@ const handleSubmit = async () => {
 
   const bookData = {
     title: form.value.title.trim(),
-    authorId: selectedAuthorId, // Use the normalized ID
+    authorId: selectedAuthorId, 
     year: form.value.year,
     tags: form.value.tags,
     coverUrl: uploadedImageUrl.value || form.value.coverUrl.trim() || placeholderImage,

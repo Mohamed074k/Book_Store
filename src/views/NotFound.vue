@@ -1,5 +1,4 @@
-<!-- src/views/NotFound.vue -->
-<template>
+ <template>
   <div class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
     <!-- Animated Background -->
     <div class="absolute inset-0 overflow-hidden">
@@ -129,8 +128,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const goBack = () => {
-  // Go back in history, or to home if no history
-  if (window.history.length > 1) {
+   if (window.history.length > 1) {
     router.go(-1)
   } else {
     router.push('/')
@@ -139,6 +137,5 @@ const goBack = () => {
 </script>
 
 <style scoped>
-/* Import animations from main styles */
-@import '../assets/styles.css';
+ @import '../assets/styles.css';
 </style>

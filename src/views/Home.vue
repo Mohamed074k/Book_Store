@@ -1,5 +1,4 @@
-<!-- src/views/Home.vue -->
-<template>
+ <template>
   <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
     <!-- Animated Book Loader -->
     <div v-if="isLoading" class="fixed inset-0 bg-gradient-hero z-50 flex items-center justify-center">
@@ -75,7 +74,7 @@
         </div>
       </div>
 
-      <!-- Quick Stats Cards - Centered -->
+      <!-- Quick Stats Cards -->
       <div class="grid grid-cols-3 md:grid-cols-3 gap-2 md:gap-8 mt-16 max-w-4xl mx-auto animate-fade-in-up animation-delay-1000">
         <div class="glass-effect rounded-3xl p-8 shadow-xl hover-lift card-hover">
           <div class="text-4xl font-bold text-gradient-primary mb-2">{{ books.list.length }}</div>
@@ -233,7 +232,7 @@
         </div>
       </section>
 
-      <!-- Featured Authors Section - Changed Background -->
+      <!-- Featured Authors Section -->
       <section class="py-20 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 relative overflow-hidden">
         <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-5">
@@ -385,8 +384,7 @@ const handleAuthorImageError = (event) => {
 }
 
 const handleGifError = (event) => {
-  // Fallback to placeholder if GIF fails to load
-  event.target.src = 'https://via.placeholder.com/400x300/e5e7eb/9ca3af?text=Reading+Animation'
+   event.target.src = 'https://via.placeholder.com/400x300/e5e7eb/9ca3af?text=Reading+Animation'
 }
 
 const loadData = async () => {
@@ -396,8 +394,7 @@ const loadData = async () => {
       authors.fetchList()
     ])
     
-    // Show loader for at least 2 seconds for better UX
-    setTimeout(() => {
+     setTimeout(() => {
       isLoading.value = false
     }, 2000)
   } catch (error) {

@@ -1,5 +1,4 @@
-<!-- src/views/admin/Login.vue -->
-<template>
+ <template>
   <div class="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4 relative overflow-hidden">
     <!-- Animated Background Elements -->
     <div class="absolute inset-0">
@@ -191,7 +190,7 @@
 
       <!-- Footer Info -->
       <div class="text-center mt-6 text-sm text-gray-500 animate-fade-in animation-delay-1000">
-        <p>✨ Demo Environment - All changes are temporary</p>
+        <p>Demo Environment - All changes are temporary</p>
       </div>
     </div>
   </div>
@@ -228,8 +227,7 @@ const quickDemo = async () => {
 </script>
 
 <style scoped>
-/* Import animations from styles.css */
-@import '../../assets/styles.css';
+ @import '../../assets/styles.css';
 
 .text-gradient-primary {
   background: linear-gradient(135deg, #3E1E68, #E45A92);

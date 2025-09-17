@@ -1,5 +1,4 @@
-<!-- SkeletonLoader.vue -->
-<template>
+ <template>
   <div
     v-for="n in repeat"
     :key="n"

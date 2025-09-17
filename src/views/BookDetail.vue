@@ -1,5 +1,4 @@
-<!-- src/views/BookDetail.vue -->
-<template>
+ <template>
   <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
     <!-- Loading State -->
     <div v-if="books.loading" class="py-20">
@@ -287,8 +286,7 @@ const shareBook = () => {
 const loadBookAndAuthor = async () => {
   const bookId = parseInt(props.id)
   
-  // Load books and authors if not already loaded
-  if (books.list.length === 0) {
+   if (books.list.length === 0) {
     await books.fetchList()
   }
   if (authors.list.length === 0) {
