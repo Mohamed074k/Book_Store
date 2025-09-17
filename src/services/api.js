@@ -1,8 +1,6 @@
-// src/services/api.js
-import axios from 'axios'
+ import axios from 'axios'
 
-// Create axios instance with proper configuration
-const api = axios.create({
+ const api = axios.create({
   baseURL: 'http://localhost:3000', 
   timeout: 10000,
   headers: {
@@ -11,56 +9,55 @@ const api = axios.create({
 })
 
 // Request interceptor
-api.interceptors.request.use(
-  (config) => {
-    // Add auth token if available
-    const token = localStorage.getItem('adminToken')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
+// api.interceptors.request.use(
+//   (config) => {
+//     // Add auth token if available
+//     const token = localStorage.getItem('adminToken')
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`
+//     }
     
-    console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`)
-    return config
-  },
-  (error) => {
-    console.error('❌ API Request Error:', error)
-    return Promise.reject(error)
-  }
-)
+//     console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`)
+//     return config
+//   },
+//   (error) => {
+//     console.error(' API Request Error:', error)
+//     return Promise.reject(error)
+//   }
+// )
 
 // Response interceptor
-api.interceptors.response.use(
-  (response) => {
-    console.log(`✅ API Response: ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`)
-    return response
-  },
-  (error) => {
-    console.error('❌ API Response Error:', error)
+// api.interceptors.response.use(
+//   (response) => {
+//     console.log(`API Response: ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`)
+//     return response
+//   },
+//   (error) => {
+//     console.error('API Response Error:', error)
     
-    // Handle different error scenarios
-    if (error.code === 'ECONNABORTED') {
-      console.error('🔥 Request timeout - is JSON server running?')
-      error.message = 'Request timeout. Please check if the server is running.'
-    } else if (error.code === 'ERR_NETWORK') {
-      console.error('🔥 Network error - is JSON server running on port 3000?')
-      error.message = 'Cannot connect to server. Please start JSON server with: npx json-server --watch db.json --port 3000'
-    } else if (error.response?.status === 404) {
-      error.message = 'Resource not found'
-    } else if (error.response?.status >= 500) {
-      error.message = 'Server error. Please try again later.'
-    }
+//     // Handle different error scenarios
+//     if (error.code === 'ECONNABORTED') {
+//       console.error(' Request timeout - is JSON server running?')
+//       error.message = 'Request timeout. Please check if the server is running.'
+//     } else if (error.code === 'ERR_NETWORK') {
+//       console.error('Network error - is JSON server running on port 3000?')
+//       error.message = 'Cannot connect to server. Please start JSON server with: npx json-server --watch db.json --port 3000'
+//     } else if (error.response?.status === 404) {
+//       error.message = 'Resource not found'
+//     } else if (error.response?.status >= 500) {
+//       error.message = 'Server error. Please try again later.'
+//     }
     
-    return Promise.reject(error)
-  }
-)
+//     return Promise.reject(error)
+//   }
+// )
  // API methods for books
 export const booksAPI = {
   // Get all books
   getAll: async (params = {}) => {
     try {
       const response = await api.get('/books', { params })
-      // Ensure IDs are numbers
-      return Array.isArray(response.data) 
+       return Array.isArray(response.data) 
         ? response.data.map(book => ({
             ...book,
             id: typeof book.id === 'string' ? parseInt(book.id) : book.id,
@@ -77,8 +74,7 @@ export const booksAPI = {
     try {
       const response = await api.get(`/books/${id}`)
       const data = response.data
-      // Ensure IDs are numbers
-      return {
+       return {
         ...data,
         id: typeof data.id === 'string' ? parseInt(data.id) : data.id,
         authorId: typeof data.authorId === 'string' ? parseInt(data.authorId) : data.authorId
@@ -88,11 +84,10 @@ export const booksAPI = {
     }
   },
 
-  // Create new book - ensure numeric ID
+  // Create new book 
   create: async (bookData) => {
     try {
-      // Generate a proper numeric ID
-      const newId = Math.floor(Date.now() / 1000) // Use timestamp-based ID
+       const newId = Math.floor(Date.now() / 1000)
       
       const response = await api.post('/books', {
         ...bookData,
@@ -101,8 +96,7 @@ export const booksAPI = {
         updatedAt: new Date().toISOString(),
       })
       
-      // Ensure response IDs are numbers
-      const data = response.data
+       const data = response.data
       return {
         ...data,
         id: typeof data.id === 'string' ? parseInt(data.id) : data.id,
@@ -113,7 +107,7 @@ export const booksAPI = {
     }
   },
 
-  // Update book - ensure numeric ID
+  // Update book 
   update: async (id, bookData) => {
     try {
       const numericId = typeof id === 'string' ? parseInt(id) : id
@@ -123,8 +117,7 @@ export const booksAPI = {
         updatedAt: new Date().toISOString(),
       })
       
-      // Ensure response IDs are numbers
-      const data = response.data
+       const data = response.data
       return {
         ...data,
         id: typeof data.id === 'string' ? parseInt(data.id) : data.id,
@@ -152,8 +145,7 @@ export const authorsAPI = {
   getAll: async (params = {}) => {
     try {
       const response = await api.get('/authors', { params })
-      // Ensure IDs are numbers
-      return Array.isArray(response.data) 
+       return Array.isArray(response.data) 
         ? response.data.map(author => ({
             ...author,
             id: typeof author.id === 'string' ? parseInt(author.id) : author.id
@@ -169,8 +161,7 @@ export const authorsAPI = {
     try {
       const response = await api.get(`/authors/${id}`)
       const data = response.data
-      // Ensure IDs are numbers
-      return {
+       return {
         ...data,
         id: typeof data.id === 'string' ? parseInt(data.id) : data.id
       }
@@ -179,11 +170,10 @@ export const authorsAPI = {
     }
   },
 
-  // Create new author - ensure numeric ID
+  // Create new author
   create: async (authorData) => {
     try {
-      // Generate a proper numeric ID
-      const newId = Math.floor(Date.now() / 1000) // Use timestamp-based ID
+       const newId = Math.floor(Date.now() / 1000) 
       
       const response = await api.post('/authors', {
         ...authorData,
@@ -192,8 +182,7 @@ export const authorsAPI = {
         updatedAt: new Date().toISOString(),
       })
       
-      // Ensure response IDs are numbers
-      const data = response.data
+       const data = response.data
       return {
         ...data,
         id: typeof data.id === 'string' ? parseInt(data.id) : data.id
@@ -203,7 +192,7 @@ export const authorsAPI = {
     }
   },
 
-  // Update author - ensure numeric ID
+  // Update author 
   update: async (id, authorData) => {
     try {
       const numericId = typeof id === 'string' ? parseInt(id) : id
@@ -213,8 +202,7 @@ export const authorsAPI = {
         updatedAt: new Date().toISOString(),
       })
       
-      // Ensure response IDs are numbers
-      const data = response.data
+       const data = response.data
       return {
         ...data,
         id: typeof data.id === 'string' ? parseInt(data.id) : data.id
@@ -254,6 +242,5 @@ export const checkServerHealth = async () => {
   }
 }
 
-// Export the main api instance for direct use
-export { api }
+ export { api }
 export default api

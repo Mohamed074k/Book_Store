@@ -1,5 +1,4 @@
-<!-- src/views/admin/Dashboard.vue -->
-<template>
+ <template>
   <div class="p-8 bg-gray-50 min-h-screen">
     <!-- Header -->
     <div class="mb-8 animate-fade-in">

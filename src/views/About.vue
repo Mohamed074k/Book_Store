@@ -1,5 +1,4 @@
-<!-- src/views/About.vue -->
-<template>
+ <template>
   <div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50">
     <!-- Hero Section -->
     <section class="bg-gradient-hero text-white py-20 relative overflow-hidden">

@@ -1,11 +1,10 @@
-<!-- src/components/layout/PublicLayout.vue -->
-<template>
+ <template>
   <div class="min-h-screen flex flex-col">
     <!-- Navbar -->
  
     <!-- Page Content -->
     <main class="flex-1">
-      <router-view /> <!-- All public pages (Home, About, Books, Authors...) render here -->
+      <router-view />
     </main>
 
  

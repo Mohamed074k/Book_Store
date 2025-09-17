@@ -1,5 +1,4 @@
- <!-- src/components/layout/AdminLayout.vue -->
-<template>
+ <template>
   <div class="min-h-screen flex flex-col overflow-x-hidden bg-gray-50">
     <!-- Top Bar -->
     <header class="bg-white shadow-sm border-b border-gray-200 h-16 flex-shrink-0 z-30">

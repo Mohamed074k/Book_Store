@@ -1,5 +1,4 @@
-<!-- src/components/layout/Header.vue -->
-<template>
+ <template>
   <header class="glass-effect border-b border-white/20 sticky top-0 z-50 backdrop-blur-lg">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
       <!-- Logo -->

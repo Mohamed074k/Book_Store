@@ -1,5 +1,4 @@
-// src/stores/auth.js
-import { defineStore } from 'pinia'
+ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -104,9 +103,7 @@ export const useAuthStore = defineStore('auth', () => {
       
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 500))
-      
-      // In a real app, you'd refresh the token here
-      // For now, just extend the current session
+ 
       const newToken = 'refreshed-token-' + Date.now()
       token.value = newToken
       localStorage.setItem('admin_token', newToken)
@@ -159,8 +156,7 @@ export const useAuthStore = defineStore('auth', () => {
         throw new Error('New password must be at least 6 characters long')
       }
       
-      // In a real app, you'd send this to the server
-      return true
+       return true
     } catch (err) {
       error.value = err.message || 'Password change failed'
       throw err

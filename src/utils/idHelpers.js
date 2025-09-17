@@ -1,5 +1,4 @@
-// src/utils/idHelpers.js //
-export const normalizeId = (id) => {
+ export const normalizeId = (id) => {
   if (id === null || id === undefined || id === '') return null
   return typeof id === 'string' ? parseInt(id) : id
 }

@@ -1,5 +1,4 @@
-<!-- src/views/admin/AuthorsCRUD.vue -->
-<template>
+ <template>
   <div class="p-8 bg-gray-50 min-h-screen">
     <!-- Header -->
     <div class="mb-8 animate-fade-in">
@@ -128,7 +127,7 @@
       </div>
     </div>
 
-    <!-- Authors List (Row Layout) -->
+    <!-- Authors List -->
     <div v-else-if="filteredAuthors.length > 0" class="space-y-4">
       <div
         v-for="(author, index) in filteredAuthors"
@@ -165,7 +164,7 @@
                   </div>
                 </div>
 
-                <!-- Actions - Now positioned at top right for mobile -->
+                <!-- Actions -->
                 <div class="flex justify-end md:justify-start space-x-2 mb-4 md:mb-0 md:ml-4">
                   <router-link
                     :to="{ name: 'AdminAuthorEdit', params: { id: author.id } }"

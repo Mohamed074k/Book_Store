@@ -1,8 +1,7 @@
-/* src/assets/admin-styles.css */
-
+ 
 /* Admin-specific animations and styles */
 
-/* Enhanced Table Styles */
+/*  Table Styles */
 .admin-table {
   @apply w-full bg-white rounded-2xl shadow-lg overflow-hidden;
 }
@@ -27,7 +26,7 @@
   @apply border-b-0;
 }
 
-/* Enhanced Card Animations */
+/*  Card Animations */
 @keyframes card-enter {
   0% {
     opacity: 0;
@@ -109,7 +108,7 @@
   @apply text-red-600;
 }
 
-/* Form Enhancements */
+/* Form */
 .admin-form-group {
   @apply mb-6;
 }
